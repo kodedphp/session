@@ -1,0 +1,55 @@
+{
+    "name": "koded/session",
+    "type": "library",
+    "license": "BSD-3-Clause",
+    "description": "Session library",
+    "keywords": [
+        "session",
+        "php7"
+    ],
+    "authors": [
+        {
+            "name": "Mihail Binev",
+            "homepage": "https://github.com/kodedphp/session"
+        }
+    ],
+    "minimum-stability": "dev",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../http",
+            "options": {
+                "symlink": true
+            }
+        }
+    ],
+    "require": {
+        "php": "^7.1.4",
+        "psr/http-server-middleware": "^1.0",
+        "koded/cache-simple": "~1",
+        "koded/http": "*",
+        "ext-memcached": "*",
+        "ext-redis": "*",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Koded\\Session\\": ""
+        },
+        "files": [
+            "functions.php"
+        ],
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Koded\\Session\\": "Tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~6",
+        "satooshi/php-coveralls": "~1"
+    }
+}
