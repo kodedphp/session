@@ -12,10 +12,11 @@ pipelines:
           - composer
         services:
           - redis
-          - memcached
         script:
           - apt-get update && apt-get install -y git unzip libmemcached-dev zlib1g-dev
-          - apt-get install php-memcached
+          - pecl install memcached
+          - docker-php-ext-enable memcached
+          - docker-php-ext-enable redis
           - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
           - composer install
           - vendor/bin/phpunit
@@ -24,6 +25,3 @@ definitions:
   services:
     redis:
       image: redis
-    memcached:
-      image: memcached
-
