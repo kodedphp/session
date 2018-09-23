@@ -2,8 +2,6 @@
 
 namespace Koded\Session;
 
-use function Koded\Stdlib\dump;
-
 trait SessionTestCaseTrait
 {
     /**
@@ -128,7 +126,8 @@ trait SessionTestCaseTrait
         $this->assertArrayNotHasKey(Session::FLASH, $_SESSION);
     }
 
-    public function test_replace() {
+    public function test_replace()
+    {
         $newData = [1 => 2];
         $oldData = $this->SUT->replace($newData);
 

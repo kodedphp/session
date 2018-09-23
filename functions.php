@@ -46,10 +46,6 @@ function session_register_custom_handler(ConfigurationFactory $configuration): S
 {
     $configuration = new SessionConfiguration($configuration);
 
-    if ($configuration->get('use_cookies')) {
-        session_set_cookie_params(...$configuration->cookieParameters());
-    }
-
     if (PHP_SESSION_ACTIVE !== session_status()) {
         // @codeCoverageIgnoreStart
         if (false === session_set_save_handler(session_create_custom_handler($configuration), false)) {

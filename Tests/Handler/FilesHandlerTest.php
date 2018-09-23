@@ -14,8 +14,7 @@ class FilesHandlerTest extends TestCase
     protected function setUp()
     {
         $this->SUT = new PhpSession;
-
-        $config = new Config;
+        $config    = new Config;
 
         $config->import([
             'session' => [
