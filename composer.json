@@ -2,7 +2,7 @@
     "name": "koded/session",
     "type": "library",
     "license": "BSD-3-Clause",
-    "description": "Session library",
+    "description": "A session library with custom handlers and php.ini support",
     "keywords": [
         "session",
         "session-handler",
