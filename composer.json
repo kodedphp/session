@@ -13,12 +13,12 @@
             "homepage": "https://github.com/kodedphp/session"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
         "php": "^7.1.4",
         "psr/http-server-middleware": "^1.0",
         "koded/cache-simple": "~1",
-        "koded/http": "*"
+        "koded/http": "dev-master",
+        "ext-json": "*"
     },
     "autoload": {
         "psr-4": {
@@ -31,6 +31,10 @@
             "/Tests/"
         ]
     },
+    "suggest": {
+        "ext-memcached": "*",
+        "ext-redis": "*"
+    },
     "autoload-dev": {
         "psr-4": {
             "Koded\\Session\\": "Tests/"
@@ -38,9 +42,12 @@
     },
     "require-dev": {
         "phpunit/phpunit": "~7",
-        "satooshi/php-coveralls": "~1",
-        "ext-memcached": "*",
-        "ext-redis": "*",
-        "ext-json": "*"
+        "satooshi/php-coveralls": "~1"
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
     }
 }
