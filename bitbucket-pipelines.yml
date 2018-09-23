@@ -13,15 +13,8 @@ pipelines:
         services:
           - redis
         script:
-          - apt-get update && apt-get install -y unzip libmemcached-dev zlib1g-dev
-          - git clone -b php7 https://github.com/php-memcached-dev/php-memcached /usr/src/php/ext/memcached \
-                && cd /usr/src/php/ext/memcached \
-                && phpize \
-                && ./configure \
-                && make all \
-                && docker-php-ext-install memcached \
-                && docker-php-ext-enable memcached \
-                && rm -rf /usr/src/php/ext/memcached
+          - apt-get update && apt-get install -y git unzip libmemcached-dev zlib1g-dev
+          - git clone -b php7 https://github.com/php-memcached-dev/php-memcached /usr/src/php/ext/memcached && cd /usr/src/php/ext/memcached && phpize && ./configure && make all && docker-php-ext-install memcached && docker-php-ext-enable memcached && rm -rf /usr/src/php/ext/memcached
 
           - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
           - composer install
