@@ -14,8 +14,16 @@ pipelines:
           - redis
         script:
           - apt-get update && apt-get install -y unzip libmemcached-dev zlib1g-dev
-          - pecl install memcached
+          - git clone -b php7 https://github.com/php-memcached-dev/php-memcached /usr/src/php/ext/memcached \
+                && cd /usr/src/php/ext/memcached \
+                && phpize \
+                && ./configure \
+                && make all \
+                && docker-php-ext-install memcached \
+                && docker-php-ext-enable memcached \
+                && rm -rf /usr/src/php/ext/memcached
           - docker-php-ext-enable memcached
+
           - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
           - composer install
           - vendor/bin/phpunit
