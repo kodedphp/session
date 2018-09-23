@@ -22,7 +22,6 @@ pipelines:
                 && docker-php-ext-install memcached \
                 && docker-php-ext-enable memcached \
                 && rm -rf /usr/src/php/ext/memcached
-          - docker-php-ext-enable memcached
 
           - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
           - composer install
