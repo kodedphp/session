@@ -14,7 +14,9 @@ pipelines:
           - redis
           - memcached
         script:
+          - add-apt-repository ppa:ondrej/php
           - apt-get update && apt-get install -y git unzip libmemcached-dev zlib1g-dev
+          - apt-get install php-memcached
           - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
           - composer install
           - vendor/bin/phpunit
