@@ -5,7 +5,9 @@
     "description": "Session library",
     "keywords": [
         "session",
-        "php7"
+        "session-handler",
+        "memcached",
+        "redis"
     ],
     "authors": [
         {
