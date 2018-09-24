@@ -20,7 +20,7 @@ class RedisHandlerTest extends TestCase
                 'save_handler'            => 'redis',
                 'expire_at_browser_close' => false,
 
-                'host'           => 'redis',
+                'host'           => getenv('REDIS_SERVER_HOST'),
                 'use_cookies'    => false,
                 'cache_limiter'  => '',
                 'gc_maxlifetime' => 60,

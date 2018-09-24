@@ -6,7 +6,7 @@
          colors="true">
     <testsuites>
         <testsuite name="Koded Session Test Suite">
-            <directory>Tests</directory>
+            <directory>./Tests</directory>
         </testsuite>
     </testsuites>
 
@@ -25,7 +25,7 @@
         <ini name="date.timezone" value="UTC"/>
         <ini name="session.cookie_lifetime" value="42"/>
 
-        <!--<cookie name="test" value="test1234"/>-->
+        <env name="REDIS_SERVER_HOST" value="redis"/>
     </php>
 
     <logging>

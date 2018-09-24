@@ -2,7 +2,6 @@
 
 namespace Koded\Session;
 
-use Koded\Session\Handler\FilesHandler;
 use Koded\Stdlib\Config;
 use PHPUnit\Framework\TestCase;
 

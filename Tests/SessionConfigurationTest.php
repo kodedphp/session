@@ -14,7 +14,7 @@ class SessionConfigurationTest extends TestCase
 
         $config = (new Config)->import([
             'session' => [
-                'save_handler' => 'files',
+                'save_handler'            => 'files',
                 'expire_at_browser_close' => true,
             ]
         ]);
