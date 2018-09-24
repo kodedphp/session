@@ -17,8 +17,6 @@ class MemcachedHandlerTest extends TestCase
             $this->markTestSkipped('Memcached extension is not loaded.');
         }
 
-        $this->SUT = new PhpSession;
-
         $config = (new Config)->import([
             'session' => [
                 'name'                    => 'test',
@@ -38,6 +36,8 @@ class MemcachedHandlerTest extends TestCase
 
         $settings = session_register_custom_handler($config);
         session_start($settings->sessionParameters());
+
+        $this->SUT = new PhpSession;
 
         $_SESSION['foo'] = 'bar';
     }
