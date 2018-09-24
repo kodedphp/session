@@ -26,6 +26,7 @@
         <ini name="session.cookie_lifetime" value="42"/>
 
         <env name="REDIS_SERVER_HOST" value="redis"/>
+        <env name="MEMCACHED_POOL" value='[["memcached",11211]]'/>
     </php>
 
     <logging>

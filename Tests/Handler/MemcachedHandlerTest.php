@@ -17,12 +17,6 @@ class MemcachedHandlerTest extends TestCase
             $this->markTestSkipped('Memcached extension is not loaded.');
         }
 
-        $servers = [['memcached', 11211]];
-
-        if (getenv('CI')) {
-            $servers = [['127.0.0.1', 11211]];
-        }
-
         $this->SUT = new PhpSession;
 
         $config = (new Config)->import([
@@ -30,8 +24,6 @@ class MemcachedHandlerTest extends TestCase
                 'name'                    => 'test',
                 'save_handler'            => 'memcached',
                 'expire_at_browser_close' => false,
-
-                'servers' => $servers,
 
                 'options' => [
                     \Memcached::OPT_DISTRIBUTION => null,

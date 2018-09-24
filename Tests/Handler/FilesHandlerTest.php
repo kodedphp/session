@@ -23,7 +23,7 @@ class FilesHandlerTest extends TestCase
 
                 'use_cookies'    => false,
                 'cache_limiter'  => '',
-                'cookie_path'    => '/tmp',
+                //                'cookie_path'    => '/tmp',
                 'gc_maxlifetime' => 60,
             ]
         ]);
