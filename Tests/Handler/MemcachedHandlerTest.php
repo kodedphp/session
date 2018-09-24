@@ -13,6 +13,16 @@ class MemcachedHandlerTest extends TestCase
 
     protected function setUp()
     {
+        if (false === extension_loaded('memcached')) {
+            $this->markTestSkipped('Memcached extension is not loaded.');
+        }
+
+        $servers = [['memcached', 11211]];
+
+        if (getenv('CI')) {
+            $servers = [['127.0.0.1', 11211]];
+        }
+
         $this->SUT = new PhpSession;
 
         $config = (new Config)->import([
@@ -21,9 +31,8 @@ class MemcachedHandlerTest extends TestCase
                 'save_handler'            => 'memcached',
                 'expire_at_browser_close' => false,
 
-                'servers' => [
-                    ['memcached', 11211]
-                ],
+                'servers' => $servers,
+
                 'options' => [
                     \Memcached::OPT_DISTRIBUTION => null,
                     \Memcached::OPT_PREFIX_KEY   => 'sess.'
@@ -34,10 +43,6 @@ class MemcachedHandlerTest extends TestCase
                 'gc_maxlifetime' => 60,
             ]
         ]);
-
-        if (defined('CI')) {
-            $config->servers = [['127.0.0.1', 11211]];
-        }
 
         $settings = session_register_custom_handler($config);
         session_start($settings->sessionParameters());

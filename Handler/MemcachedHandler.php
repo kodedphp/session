@@ -75,7 +75,7 @@ final class MemcachedHandler implements SessionHandlerInterface
     {
         return new MemcachedConfiguration([
             'id'      => $settings->get('id', $settings->get('name', ini_get('session.name'))),
-            'servers' => $settings->get('servers', []),
+            'servers' => $settings->get('servers', [['127.0.0.1', 11211]]),
             'options' => $settings->get('options', []) + [
                     Memcached::OPT_PREFIX_KEY => $settings->prefix ?? 'session.'
                 ]
