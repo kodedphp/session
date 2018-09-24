@@ -23,7 +23,7 @@ class SessionConfigurationTest extends TestCase
 
         $this->assertEquals(0, ini_get('session.cookie_lifetime'));
         $this->assertEquals(0, $settings->get('cookie_lifetime'));
-        $this->assertEquals(0, session_get_cookie_params()['cookie_lifetime']);
+        $this->assertEquals(0, session_get_cookie_params()['lifetime']);
 
         $this->assertNotEquals($current, $settings->get('cookie_lifetime'));
     }
