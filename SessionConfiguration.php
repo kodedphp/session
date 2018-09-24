@@ -22,6 +22,7 @@ class SessionConfiguration extends Config
     public function __construct(ConfigurationFactory $settings)
     {
         $this
+            ->set('name', 'session')
             ->import($settings->get('session', []))
             ->import([
                 'use_strict_mode'  => '1', // enable to prevent session fixation
@@ -29,11 +30,11 @@ class SessionConfiguration extends Config
                 'use_only_cookies' => '1', // disable session identifiers in the URLs
                 'cache_limiter'    => '',  // disable response headers
                 'referer_check'    => '',  // disable for it has a dangerous implementation with substr() check
-            ])
-            ->upsert('name', 'session');
+            ]);
 
         if ($this->get('expire_at_browser_close')) {
             ini_set('session.cookie_lifetime', 0);
+            $this->set('cookie_lifetime',  0);
         }
 
         foreach ($this as $name => $value) {
