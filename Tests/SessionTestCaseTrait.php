@@ -128,12 +128,34 @@ trait SessionTestCaseTrait
 
     public function test_replace()
     {
-        $newData = [1 => 2];
+        $newData = ['name' => 'value'];
         $oldData = $this->SUT->replace($newData);
 
-        $this->assertSame($newData, $this->SUT->toArray());
+        $this->assertSame($newData, $this->SUT->toArray(), 'The session data is replaced');
         $this->assertArraySubset(['foo' => 'bar'], $oldData);
         $this->assertTrue($this->SUT->modified());
+    }
+
+    public function test_import_ignores_non_string_keys()
+    {
+        $oldData = $this->SUT->toArray();
+        $newData = [1 => 2];
+
+        $this->SUT->import($newData);
+
+        $this->assertSame($oldData, $this->SUT->toArray(), 'The non-string keys are ignored');
+        $this->assertArraySubset(['foo' => 'bar'], $oldData);
+        $this->assertTrue($this->SUT->modified());
+    }
+
+    public function test_import_should_import()
+    {
+        $this->SUT->import(['name' => 'changed']);
+
+        $this->assertSame([
+            'name' => 'changed',
+            'foo'  => 'bar'
+        ], $this->SUT->toArray(), 'The existing session variables are replaced');
     }
 
     /*

@@ -51,6 +51,8 @@ interface Session
 
     public function add(string $name, $value): void;
 
+    public function import(array $data): Session;
+
     public function remove(string $name): void;
 
     public function all(): array;
@@ -126,6 +128,10 @@ final class PhpSession implements Session
 
     public function __construct()
     {
+        if (PHP_SESSION_ACTIVE !== session_status()) {
+            $_SESSION = [];
+        }
+
         $this->loadMetadata();
         $this->accessed = false;
         $this->modified = false;
@@ -197,6 +203,16 @@ final class PhpSession implements Session
         $this->has($name) || $this->set($name, $value);
     }
 
+    public function import(array $data): Session
+    {
+        $data     = array_filter($data, 'is_string', ARRAY_FILTER_USE_KEY);
+        $_SESSION = array_replace($_SESSION, $data);
+
+        $this->modified = true;
+
+        return $this;
+    }
+
     public function pull(string $name, $default = null)
     {
         $value = $_SESSION[$name] ?? $default;
@@ -244,9 +260,9 @@ final class PhpSession implements Session
      */
     public function replace(array $data): array
     {
-        $oldSession     = $_SESSION;
-        $_SESSION       = $data;
-        $this->modified = true;
+        $oldSession = $_SESSION;
+        $_SESSION   = [];
+        $this->import($data);
 
         return $oldSession;
     }
