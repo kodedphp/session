@@ -8,16 +8,10 @@ use PHPUnit\Framework\TestCase;
 class FunctionsTest extends TestCase
 {
 
-    public function test_session_function()
-    {
-        $this->assertInstanceOf(Session::class, session());
-        $this->assertSame(session()->token(), session()->token());
-    }
-
     public function test_should_throw_exception_on_invalid_handler_class()
     {
         $this->expectException(SessionException::class);
-        $this->expectExceptionCode(SessionException::E_HANDLER_NOT_FOUND);
+        $this->expectExceptionCode(0);
         $this->expectExceptionMessage('Failed to load the session handler class. Requested Koded\Session\Handler\StdClassHandler');
 
         $config = (new Config)->import([

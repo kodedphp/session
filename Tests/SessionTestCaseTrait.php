@@ -16,17 +16,6 @@ trait SessionTestCaseTrait
         $this->assertNotEmpty($this->SUT->token());
     }
 
-//    public function test_multiple_session_creation() {
-//        $this->expectException(\RuntimeException::class);
-//        $this->expectExceptionMessage('[BUG] The session is already created. Please fix your code.');
-//        new PhpSession;
-//    }
-
-    /*
-     *
-     * (aliases for ArrayObject methods)
-     *
-     */
     public function test_get()
     {
         $this->assertSame('bar', $this->SUT->get('foo'));
@@ -79,6 +68,16 @@ trait SessionTestCaseTrait
     {
         $this->assertTrue($this->SUT->has('foo'));
         $this->assertFalse($this->SUT->has('this_is_not_set'));
+    }
+
+    public function test_toData()
+    {
+        $data = $this->SUT->toData();
+
+        $this->assertEquals('bar', $data->foo);
+        $this->assertNull($data->get('_stamp'));
+        $this->assertNull($data->get('_agent'));
+        $this->assertNull($data->get('_token'));
     }
 
     /*

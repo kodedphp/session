@@ -14,6 +14,10 @@ class RedisHandlerTest extends TestCase
 
     protected function setUp()
     {
+        if (false === extension_loaded('redis')) {
+            $this->markTestSkipped('Redis extension is not loaded');
+        }
+
         $config = (new Config)->import([
             'session' => [
                 'name'                    => 'test',
