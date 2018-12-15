@@ -12,30 +12,23 @@
 
 namespace Koded\Session\Handler;
 
-use Koded\Caching\Client\RedisClient;
-use Koded\Caching\Configuration\RedisConfiguration;
 use Koded\Session\SessionConfiguration;
-use Redis;
 use SessionHandlerInterface;
+use function Koded\Caching\simple_cache_factory;
 
 
 final class RedisHandler implements SessionHandlerInterface
 {
-
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $ttl;
 
-    /**
-     * @var Redis
-     */
+    /** @var \Redis */
     private $client;
 
     public function __construct(SessionConfiguration $settings)
     {
         $this->ttl    = (int)$settings->get('gc_maxlifetime', ini_get('session.gc_maxlifetime'));
-        $this->client = (new RedisClient(new Redis, $this->configuration($settings)))->client();
+        $this->client = simple_cache_factory('redis', $this->configuration($settings))->client();
     }
 
     public function close(): bool
@@ -75,15 +68,15 @@ final class RedisHandler implements SessionHandlerInterface
         return true;
     }
 
-    private function configuration(SessionConfiguration $settings): RedisConfiguration
+    private function configuration(SessionConfiguration $settings): array
     {
-        return new RedisConfiguration([
+        return [
             'prefix'  => (string)$settings->get('prefix', 'session:'),
             'host'    => (string)$settings->get('host'),
             'port'    => (int)$settings->get('port', 6379),
             'timeout' => (float)$settings->get('timeout', 0.0),
             'retry'   => (int)$settings->get('retry', 0),
             'db'      => (int)$settings->get('db', 0),
-        ]);
+        ];
     }
 }

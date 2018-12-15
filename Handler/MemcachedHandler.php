@@ -12,30 +12,23 @@
 
 namespace Koded\Session\Handler;
 
-use Koded\Caching\Client\MemcachedClient;
-use Koded\Caching\Configuration\MemcachedConfiguration;
 use Koded\Session\SessionConfiguration;
-use Memcached;
 use SessionHandlerInterface;
+use function Koded\Caching\simple_cache_factory;
 
 
 final class MemcachedHandler implements SessionHandlerInterface
 {
-
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $ttl;
 
-    /**
-     * @var Memcached
-     */
+    /** @var \Memcached */
     private $client;
 
     public function __construct(SessionConfiguration $settings)
     {
         $this->ttl    = (int)$settings->get('gc_maxlifetime', ini_get('session.gc_maxlifetime'));
-        $this->client = (new MemcachedClient(new Memcached, $this->configuration($settings)))->client();
+        $this->client = simple_cache_factory('memcached', $this->configuration($settings))->client();
     }
 
     public function close(): bool
@@ -71,18 +64,18 @@ final class MemcachedHandler implements SessionHandlerInterface
         return true;
     }
 
-    private function configuration(SessionConfiguration $settings): MemcachedConfiguration
+    private function configuration(SessionConfiguration $settings): array
     {
         if (!$servers = $settings->get('servers')) {
             $servers = json_decode(getenv('MEMCACHED_POOL'), true) ?? [['127.0.0.1', 11211]];
         }
 
-        return new MemcachedConfiguration([
-            'id'      => $settings->get('id', $settings->get('name', ini_get('session.name'))),
+        return [
             'servers' => $servers,
+            'id'      => $settings->get('id', $settings->get('name', ini_get('session.name'))),
             'options' => $settings->get('options', []) + [
-                    Memcached::OPT_PREFIX_KEY => $settings->prefix ?? 'session.'
+                    \Memcached::OPT_PREFIX_KEY => $settings->prefix ?? 'session.'
                 ]
-        ]);
+        ];
     }
 }
