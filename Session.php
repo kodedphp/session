@@ -15,7 +15,6 @@ namespace Koded\Session;
 use Koded\Exceptions\KodedException;
 use Koded\Stdlib\{Immutable, UUID};
 use Koded\Stdlib\Interfaces\Data;
-use function Koded\Stdlib\json_serialize;
 
 
 interface Session
@@ -100,7 +99,6 @@ interface Session
  */
 final class PhpSession implements Session
 {
-
     /**
      * @var bool
      */
@@ -128,14 +126,14 @@ final class PhpSession implements Session
 
     public function __construct()
     {
-        if (PHP_SESSION_ACTIVE !== session_status()) {
+        if (false === isset($_SESSION)) {
+            global $_SESSION;
             $_SESSION = [];
         }
 
         $this->loadMetadata();
         $this->accessed = false;
         $this->modified = false;
-
         session($this);
     }
 
@@ -337,7 +335,7 @@ final class PhpSession implements Session
      */
 
     /**
-     * Copy CSRF token, start time, user agent into object properties.
+     * move CSRF token, start time and user agent into object properties.
      */
     private function loadMetadata(): void
     {
@@ -368,28 +366,14 @@ final class PhpSession implements Session
  */
 class SessionException extends KodedException
 {
-    const E_HANDLER_NOT_FOUND     = 0;
-    const E_HANDLER_REGISTRATION  = 1;
-    const E_INVALID_SESSION_CLASS = 2;
+    private const E_HANDLER_NOT_FOUND = 0;
 
     protected $messages = [
-        self::E_HANDLER_NOT_FOUND     => 'Failed to load the session handler class. Requested :handler',
-        self::E_HANDLER_REGISTRATION  => 'Failed to register the session handler. Check your configuration. Error: :error',
-        self::E_INVALID_SESSION_CLASS => 'Requested session class :class must implement the Session interface',
+        self::E_HANDLER_NOT_FOUND => 'Failed to load the session handler class. Requested :handler',
     ];
 
     public static function forNotFoundHandler(string $handler): SessionException
     {
         return new self(self::E_HANDLER_NOT_FOUND, [':handler' => $handler]);
-    }
-
-    public static function forHandlerRegistration(array $lastError): SessionException
-    {
-        return new self(self::E_HANDLER_REGISTRATION, [':error' => json_serialize($lastError)]);
-    }
-
-    public static function forInvalidClass(string $class): SessionException
-    {
-        return new self(self::E_INVALID_SESSION_CLASS, [':class' => $class]);
     }
 }
