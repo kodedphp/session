@@ -34,7 +34,7 @@ class SessionConfiguration extends Config
 
         if ($this->get('expire_at_browser_close')) {
             ini_set('session.cookie_lifetime', 0);
-            $this->set('cookie_lifetime',  0);
+            $this->set('cookie_lifetime', 0);
         }
 
         foreach ($this as $name => $value) {
@@ -56,24 +56,24 @@ class SessionConfiguration extends Config
     {
         static $ini;
 
-        if (!$ini) {
-            $ini = (new Immutable($this->filter(ini_get_all('session', false), 'session.', false)))
-                ->extract([
-                    'cache_expire',
-                    'cache_limiter',
-                    'gc_maxlifetime',
-                    'name',
-                    'referer_check',
-                    'serialize_handler',
-                    'sid_bits_per_character',
-                    'sid_length',
-                    'use_cookies',
-                    'use_only_cookies',
-                    'use_strict_mode',
-                    'use_trans_sid',
-                ]);
+        if ($ini) {
+            return $ini;
         }
 
-        return $ini;
+        return $ini = (new Immutable($this->filter(ini_get_all('session', false), 'session.', false)))
+            ->extract([
+                'cache_expire',
+                'cache_limiter',
+                'gc_maxlifetime',
+                'name',
+                'referer_check',
+                'serialize_handler',
+                'sid_bits_per_character',
+                'sid_length',
+                'use_cookies',
+                'use_only_cookies',
+                'use_strict_mode',
+                'use_trans_sid',
+            ]);
     }
 }
