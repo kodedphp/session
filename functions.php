@@ -28,7 +28,7 @@ function session(Session $instance = null): Session
     static $session;
 
     if ($instance) {
-        $session = $instance;
+        return $session = $instance;
     }
 
     return $session ?? $session = new PhpSession;
@@ -47,11 +47,7 @@ function session_register_custom_handler(ConfigurationFactory $configuration): S
     $configuration = new SessionConfiguration($configuration);
 
     if (PHP_SESSION_ACTIVE !== session_status()) {
-        // @codeCoverageIgnoreStart
-        if (false === session_set_save_handler(session_create_custom_handler($configuration), false)) {
-            throw SessionException::forHandlerRegistration(error_get_last() ?? []);
-        }
-        // @codeCoverageIgnoreEnd
+        session_set_save_handler(session_create_custom_handler($configuration), false);
     }
 
     return $configuration;
