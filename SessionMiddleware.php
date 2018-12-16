@@ -21,25 +21,15 @@ class SessionMiddleware implements MiddlewareInterface
 {
     public const SESSION_STARTED = 'sessionStarted';
 
-    /**
-     * @var array Options for session_start()
-     * @see http://php.net/manual/en/session.configuration.php
-     */
-    private $options = [];
-
     public function __construct(ConfigurationFactory $settings)
     {
-        $this->options = session_register_custom_handler($settings)->sessionParameters();
+        $options = session_register_custom_handler($settings)->sessionParameters();
+        session_start($options);
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        session_write_close();
-
-        if (PHP_SESSION_ACTIVE !== session_status()) {
-            $request = $request->withAttribute(self::SESSION_STARTED, $this->startSession());
-        }
-
+        $request  = $request->withAttribute(self::SESSION_STARTED, PHP_SESSION_ACTIVE === session_status());
         $response = $handler->handle($request);
 
         if (500 !== $response->getStatusCode()) {
@@ -47,14 +37,5 @@ class SessionMiddleware implements MiddlewareInterface
         }
 
         return $response;
-    }
-
-    private function startSession(): bool
-    {
-        if ($started = session_start($this->options)) {
-            new PhpSession;
-        }
-
-        return $started;
     }
 }
