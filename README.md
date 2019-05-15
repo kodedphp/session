@@ -10,11 +10,10 @@ Koded Session
 
 
 The library relies on the `php.ini` settings.
-Every session ini directive can be reset in the
-configuration object.
+Every session ini directive can be reset with the
+`Koded\Session\SessionConfiguration` object.
 
 Refer to php.ini session directives:
-
 http://php.net/manual/en/session.security.ini.php
 
 
@@ -51,8 +50,8 @@ session()->set('key', 'value');
 // etc.
 ```
 
-The session class can be instantiated and used, but function `session()`
-is much preferred instead an instance of `Session` class.
+The session class can be instantiated and used, but the function `session()`
+is recommended instead an instance of `Session` class.
 
 
 Handlers Configuration
@@ -63,7 +62,7 @@ The bare minimum is to define the handler you want to use for the session:
 ```php
 // in your configuration file
 
-[
+return [
     'session' => [
         'save_handler' => 'redis | memcache'
     ]
@@ -73,11 +72,10 @@ The bare minimum is to define the handler you want to use for the session:
 If you do not choose one of the Redis or Memcached, it defaults to `files`
 handler which is the PHP's default session mechanism.
 
-However, the `files` handler might not be a desirable if your application
-runs in Docker, Kubernetes or otherwise horizontal scaled setup,
-distributed environment, etc.
+However, the `files` handler might not be desirable if your application
+runs in Docker, Kubernetes, distributed environment, etc.
 
-    The best choice is Redis in almost all situations.
+    The best choice for PHP sessions is Redis in almost all situations.
 
 WARNING: Memcached may drop the session data, because it's nature. Use it with caution!
 
@@ -89,16 +87,14 @@ Redis handler
     'session' => [
         'save_handler' => 'redis'
         
-        // OPTIONAL:
-        // these are the defaults
-        'prefix' => 'sess:',
-
+        // OPTIONAL, these are the defaults
         'host' => 'localhost',
         'port' => 6379,
         'timeout' => 0.0,
         'retry' => 0,
         'db' => 0,
         
+        'prefix' => 'sess:',
         'serializer' => 'php', // or "json"
         'binary' => false,     // TRUE for igbinary
     ]
@@ -107,8 +103,8 @@ Redis handler
 
 A typical Redis settings:
 - 1 server
-- application
-- Redis (localhost:6379)
+- application + redis on the same machine
+- Redis (127.0.0.1:6379)
 - no auth (Redis is not available from outside)
 
 ```php
@@ -136,9 +132,8 @@ Memcached handler
     'session' => [
         'save_handler' => 'memcached',
         
-        // OPTIONAL:
-        // If you have multi memcached servers,
-        // defaults to ['127.0.0.1', 11211]
+        // OPTIONAL: defaults to ['127.0.0.1', 11211]
+        // If you have multiple memcached servers
         'servers' => [
             ['127.0.0.1', 11211],
             ['127.0.0.1', 11212],
@@ -146,7 +141,7 @@ Memcached handler
             ...
         ],
         
-        // the options are optional
+        // OPTIONAL: the options are not mandatory
         'options' => [
             ...
         ]
@@ -156,8 +151,8 @@ Memcached handler
 
 A typical Memcached settings:
 - 1 server
-- application
-- Memcached (localhost:11211)
+- application + memcached on the same machine
+- Memcached (127.0.0.1:11211)
 
 ```php
 [
@@ -169,9 +164,8 @@ A typical Memcached settings:
 ]
 ```
 
-To support huge amount of sessions you need a decent amounts of RAM
-on your server(s).
-But Memcached is a master technology for this, so you should be fine.
+To support huge amount of users you need a decent amounts of RAM
+on your servers. But Memcached is a master technology for this, so you should be fine.
 
 
 Files handler
@@ -180,14 +174,13 @@ Files handler
 This one is not recommended for any serious business.
 It's fine only for small projects.
 
-All session directives are defined in `php.ini`.
+All session directives are copied from `php.ini`.
 
 ```php
 [
     'session' => [
-        // OPTIONAL:
-        // the path where to store the session data,
-        // defaults to "session_save_path()"
+        // OPTIONAL: defaults to "session_save_path()"
+        // the path where to store the session data
         'save_path' => '/var/www/sessions',
         'serialize_handler' => 'php'
     ]
@@ -206,6 +199,6 @@ A typical native PHP session settings:
 ```
 
 You cannot use this handler if you've scaled your application,
-because the session data will be handled on different instance
-for every HTTP request.
+because the session data will most likely be handled randomly 
+on a different instance for every HTTP request.
 
