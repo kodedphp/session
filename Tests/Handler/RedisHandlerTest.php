@@ -23,16 +23,16 @@ class RedisHandlerTest extends TestCase
                 'name'                    => 'test',
                 'save_handler'            => 'redis',
                 'expire_at_browser_close' => false,
+                'use_cookies'             => false,
+                'cache_limiter'           => '',
+                'gc_maxlifetime'          => 60,
 
-                'host'           => getenv('REDIS_SERVER_HOST'),
-                'use_cookies'    => false,
-                'cache_limiter'  => '',
-                'gc_maxlifetime' => 60,
+                'host' => getenv('REDIS_SERVER_HOST'),
             ]
         ]);
 
         if (defined('CI')) {
-            $config->host = '127.0.0.1';
+            $config->set('host', '127.0.0.1');
         }
 
         $settings = session_register_custom_handler($config);

@@ -17,18 +17,14 @@ class MemcachedHandlerTest extends TestCase
             $this->markTestSkipped('Memcached extension is not loaded');
         }
 
-        if (false === extension_loaded('memcached')) {
-            $this->markTestSkipped('Memcached extension is not loaded.');
-        }
-
         $config = (new Config)->import([
             'session' => [
                 'name'                    => 'test',
                 'save_handler'            => 'memcached',
                 'expire_at_browser_close' => false,
-                'use_cookies'    => false,
-                'cache_limiter'  => '',
-                'gc_maxlifetime' => 60,
+                'use_cookies'             => false,
+                'cache_limiter'           => '',
+                'gc_maxlifetime'          => 60,
 
                 'servers' => defined('CI') ? [['127.0.0.1', 11211]] : [['memcached', 11211]],
                 'options' => [
