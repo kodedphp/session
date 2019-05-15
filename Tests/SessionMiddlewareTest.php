@@ -30,7 +30,6 @@ class SessionMiddlewareTest extends TestCase
         });
 
         $this->assertSame(PHP_SESSION_NONE, session_status());
-
     }
 
     public function test_should_start_the_session_and_keep_the_session()
