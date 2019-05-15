@@ -126,7 +126,7 @@ final class PhpSession implements Session
     private $modified = false;
 
     /**
-     * @var int
+     * @var float
      */
     private $stamp = 0;
 
@@ -174,7 +174,7 @@ final class PhpSession implements Session
         return (array)$_SESSION + $this->getMetadata();
     }
 
-    function __set(string $name, $value)
+    public function __set(string $name, $value)
     {
         return $this->set($name, $value);
     }
