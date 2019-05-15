@@ -88,7 +88,7 @@ trait SessionTestCaseTrait
 
     public function test_clear()
     {
-        $this->assertEquals(['qux' => 'zim', 'foo' => 'bar'], $this->SUT->toArray());
+        $this->assertEquals(['foo' => 'bar'], $this->SUT->toArray());
 
         $this->SUT->clear();
         $this->assertEmpty($this->SUT->toArray());
@@ -98,17 +98,25 @@ trait SessionTestCaseTrait
     public function test_destroy()
     {
         $sessionId = $this->SUT->id();
+        $token = $this->SUT->token();
+        $timestamp = $this->SUT->starttime();
 
+        $this->assertNotEmpty($sessionId);
         $this->assertTrue($this->SUT->destroy());
+
         $this->assertNotEquals($sessionId, $this->SUT->id(), 'Session id is regenerated');
+        $this->assertNotEquals($token, $this->SUT->token(), 'Session token is regenerated');
+        $this->assertNotEquals($timestamp, $this->SUT->starttime(), 'Session timestamp is regenerated');
     }
 
     public function test_regenerate()
     {
         $sessionId = $this->SUT->id();
+        $token = $this->SUT->token();
 
         $this->assertTrue($this->SUT->regenerate());
         $this->assertNotEquals($this->SUT->id(), $sessionId);
+        $this->assertNotEquals($this->SUT->token(), $token, 'The session token is regenerated');
     }
 
     public function test_flash()
@@ -151,7 +159,7 @@ trait SessionTestCaseTrait
     {
         $this->SUT->import(['name' => 'changed']);
 
-        $this->assertSame([
+        $this->assertEquals([
             'name' => 'changed',
             'foo'  => 'bar'
         ], $this->SUT->toArray(), 'The existing session variables are replaced');
@@ -195,7 +203,7 @@ trait SessionTestCaseTrait
 
     public function test_useragent()
     {
-        $this->assertSame('', $this->SUT->agent());
+        $this->assertSame('Koded/Session', $this->SUT->agent());
         $this->assertFalse($this->SUT->accessed(), 'This method does not flag the session accessed');
     }
 
