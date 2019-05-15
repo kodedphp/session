@@ -5,8 +5,13 @@ namespace Koded\Session;
 use Koded\Stdlib\Config;
 use PHPUnit\Framework\TestCase;
 
+
 class FunctionsTest extends TestCase
 {
+    public function test_session_function_singleton()
+    {
+        $this->assertSame(session(), session());
+    }
 
     public function test_should_throw_exception_on_invalid_handler_class()
     {
@@ -45,6 +50,7 @@ class FunctionsTest extends TestCase
             'domain'   => '',
             'secure'   => true,
             'httponly' => true,
+            'samesite' => '',
         ], session_get_cookie_params());
     }
 }
