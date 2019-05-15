@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": "~7.3",
+        "php": "^7.3.5",
         "psr/http-server-middleware": "~1",
         "koded/cache-simple": "dev-2.0-dev",
         "koded/http": "dev-master",
