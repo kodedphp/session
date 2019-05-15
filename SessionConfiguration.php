@@ -29,7 +29,7 @@ class SessionConfiguration extends Config
                 'use_trans_sid'    => '0', // disable to prevent session fixation and hijacking
                 'use_only_cookies' => '1', // disable session identifiers in the URLs
                 'cache_limiter'    => '',  // disable response headers
-                'referer_check'    => '',  // disable for it has a dangerous implementation with substr() check
+                'referer_check'    => '',  // disable it, not a safe implementation (with substr() check)
             ]);
 
         if ($this->get('expire_at_browser_close')) {
@@ -54,13 +54,7 @@ class SessionConfiguration extends Config
      */
     public function sessionParameters(): array
     {
-        static $ini;
-
-        if ($ini) {
-            return $ini;
-        }
-
-        return $ini = (new Immutable($this->filter(ini_get_all('session', false), 'session.', false)))
+        return (new Immutable($this->filter(ini_get_all('session', false), 'session.', false)))
             ->extract([
                 'cache_expire',
                 'cache_limiter',
