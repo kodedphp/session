@@ -23,8 +23,7 @@ class SessionMiddleware implements MiddlewareInterface
 
     public function __construct(ConfigurationFactory $settings)
     {
-        $options = session_register_custom_handler($settings)->sessionParameters();
-        session_start($options);
+        session_start(session_register_custom_handler($settings)->sessionParameters());
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
