@@ -12,7 +12,7 @@
 
 namespace Koded\Session;
 
-use Koded\Http\{StatusCode, ServerResponse};
+use Koded\Http\{ServerResponse, StatusCode};
 use Koded\Stdlib\Interfaces\ConfigurationFactory;
 use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
 use Psr\Http\Server\{MiddlewareInterface, RequestHandlerInterface};
@@ -21,7 +21,7 @@ use Psr\Http\Server\{MiddlewareInterface, RequestHandlerInterface};
 class SessionAuthenticatedMiddleware implements MiddlewareInterface
 {
     public const AUTHENTICATED = 'authenticated';
-    public const LOGIN_URI   = 'loginUri';
+    public const LOGIN_URI     = 'loginUri';
 
     private $redirectTo = '/';
 
@@ -32,17 +32,12 @@ class SessionAuthenticatedMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (true !== ($_SESSION[self::AUTHENTICATED] ?? false)) {
-            return $this->redirect();
+        if (true === ($_SESSION[self::AUTHENTICATED] ?? false)) {
+            return $handler->handle($request);
         }
 
-        return $handler->handle($request);
-    }
-
-    private function redirect(): ResponseInterface
-    {
         // Ajax requests should be handled in the browser
-        if (strtoupper($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHTTPREQUEST') {
+        if ('XMLHTTPREQUEST' === strtoupper($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '')) {
             return (new ServerResponse(json_encode([
                 'location' => $this->redirectTo,
                 'status'   => StatusCode::UNAUTHORIZED
