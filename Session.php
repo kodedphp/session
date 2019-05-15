@@ -21,7 +21,7 @@ interface Session
 {
 
     /**
-     * The time session has started for the last request.
+     * The timestamp when session started.
      */
     const STAMP = '_stamp';
 
@@ -31,7 +31,7 @@ interface Session
     const AGENT = '_agent';
 
     /**
-     * CSRF token
+     * Session token (useful for CSRF)
      */
     const TOKEN = '_token';
 
@@ -62,8 +62,24 @@ interface Session
 
     public function clear(): bool;
 
+    /**
+     * Destroys all of the data associated with the current session,
+     * by closing the session and re-opening it again.
+     * Also the object state is cleaned and internal metadata is recreated.
+     *
+     * @return bool TRUE on success, FALSE otherwise
+     */
     public function destroy(): bool;
 
+    /**
+     * Update the current session id with a newly generated one
+     * and session token with a new v4 UUID.
+     *
+     * @param bool $deleteOldSession [optional] Whether to delete the old associated session or not
+     *
+     * @return bool TRUE on success, FALSE otherwise
+     * @link https://php.net/manual/en/function.session-regenerate-id.php
+     */
     public function regenerate(bool $deleteOldSession = false): bool;
 
     /**
@@ -83,7 +99,7 @@ interface Session
 
     public function token(): string;
 
-    public function starttime(): int;
+    public function starttime(): float;
 
     public function agent(): string;
 
@@ -126,22 +142,17 @@ final class PhpSession implements Session
 
     public function __construct()
     {
+        // @codeCoverageIgnoreStart
         if (false === isset($_SESSION)) {
             global $_SESSION;
             $_SESSION = [];
         }
+        // @codeCoverageIgnoreEnd
 
         $this->loadMetadata();
         $this->accessed = false;
         $this->modified = false;
         session($this);
-    }
-
-    public function __destruct()
-    {
-        $_SESSION[self::STAMP] = $this->stamp;
-        $_SESSION[self::AGENT] = $this->agent;
-        $_SESSION[self::TOKEN] = $this->token;
     }
 
     public function get(string $name, $default = null)
@@ -249,13 +260,6 @@ final class PhpSession implements Session
      *
      */
 
-    /**
-     * Exchange the session data for another one.
-     *
-     * @param array $data The new array or object to exchange with the current session data
-     *
-     * @return array The old session data
-     */
     public function replace(array $data): array
     {
         $oldSession = $_SESSION;
@@ -275,13 +279,23 @@ final class PhpSession implements Session
 
     public function regenerate(bool $deleteOldSession = false): bool
     {
+        $_SESSION[self::TOKEN] = $this->token = UUID::v4();
+
         return session_regenerate_id($deleteOldSession);
     }
 
     public function destroy(): bool
     {
-        // FIXME
+        session_write_close();
+
+        // @codeCoverageIgnoreStart
+        if (false === session_start()) {
+            return false;
+        }
+        // @codeCoverageIgnoreEnd
+
         $updated = session_regenerate_id(true);
+
         $this->replace([]);
         $this->resetMetadata();
 
@@ -308,7 +322,7 @@ final class PhpSession implements Session
         return $this->token;
     }
 
-    public function starttime(): int
+    public function starttime(): float
     {
         return $this->stamp;
     }
@@ -339,16 +353,16 @@ final class PhpSession implements Session
      */
     private function loadMetadata(): void
     {
-        $this->stamp = $this->pull(self::STAMP, time());
+        $this->stamp = $this->pull(self::STAMP, microtime(true));
         $this->agent = $this->pull(self::AGENT, $_SERVER['HTTP_USER_AGENT'] ?? '');
         $this->token = $this->pull(self::TOKEN, UUID::v4());
     }
 
     private function resetMetadata(): void
     {
-        $_SESSION[self::STAMP] = time();
-        $_SESSION[self::AGENT] = $_SERVER['HTTP_USER_AGENT'] ?? '';
-        $_SESSION[self::TOKEN] = UUID::v4();
+        $_SESSION[self::STAMP] = $this->stamp = microtime(true);
+        $_SESSION[self::AGENT] = $this->agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+        $_SESSION[self::TOKEN] = $this->token = UUID::v4();
     }
 
     private function getMetadata(): array
