@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/7.4/phpunit.xsd"
-         bootstrap="Tests/loader.php"
+         bootstrap="Tests/bootstrap.php"
+         processIsolation="true"
+         stopOnError="true"
          verbose="true"
          colors="true">
     <testsuites>
@@ -15,6 +17,7 @@
         <whitelist>
             <directory suffix=".php">./</directory>
             <exclude>
+                <directory>build</directory>
                 <directory>vendor</directory>
                 <directory>Tests</directory>
             </exclude>
@@ -26,7 +29,8 @@
         <ini name="session.cookie_lifetime" value="42"/>
 
         <env name="REDIS_SERVER_HOST" value="redis"/>
-        <env name="MEMCACHED_POOL" value='[["memcached",11211]]'/>
+
+        <server name="HTTP_USER_AGENT" value="Koded/Session"/>
     </php>
 
     <logging>
