@@ -1,0 +1,26 @@
+language: php
+
+sudo: false
+
+php:
+  - 7.2
+  - 7.3
+
+services:
+  - memcached
+  - redis-server
+
+matrix:
+  fast_finish: true
+
+before_script:
+  - composer selfupdate
+  - composer update -o --no-interaction --prefer-stable
+  - echo "extension=memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo "extension=redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+
+script:
+  - vendor/bin/phpunit --coverage-clover build/coverage/clover.xml
+
+after_script:
+  - vendor/bin/codacycoverage clover build/coverage/clover.xml

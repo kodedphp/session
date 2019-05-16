@@ -27,13 +27,9 @@ class RedisHandlerTest extends TestCase
                 'cache_limiter'           => '',
                 'gc_maxlifetime'          => 60,
 
-                'host' => getenv('REDIS_SERVER_HOST'),
+                'host' => defined('CI') ? '127.0.0.1' : 'redis'
             ]
         ]);
-
-        if (defined('CI')) {
-            $config->set('host', '127.0.0.1');
-        }
 
         $settings = session_register_custom_handler($config);
         session_start($settings->sessionParameters());
