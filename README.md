@@ -74,7 +74,7 @@ handler which is the PHP's default session mechanism.
 However, the `files` handler might not be desirable if your application
 runs in Docker, Kubernetes, distributed environment, etc.
 
-    The best choice for PHP sessions is Redis in almost all situations.
+> The best choice for PHP sessions is Redis in almost all situations.
 
 WARNING: Memcached may drop the session data, because it's nature. Use it with caution!
 
@@ -101,10 +101,10 @@ Redis handler
 ```
 
 A typical Redis settings:
-- 1 server
-- application + redis on the same machine
-- Redis (127.0.0.1:6379)
-- no auth (Redis is not available from outside)
+  - 1 server
+  - application + redis on the same machine
+  - Redis (127.0.0.1:6379)
+  - no auth (Redis is not available from outside)
 
 ```php
 [
@@ -149,9 +149,9 @@ Memcached handler
 ```
 
 A typical Memcached settings:
-- 1 server
-- application + memcached on the same machine
-- Memcached (127.0.0.1:11211)
+  - 1 server
+  - application + memcached on the same machine
+  - Memcached (127.0.0.1:11211)
 
 ```php
 [
