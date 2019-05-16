@@ -15,12 +15,16 @@ matrix:
 
 before_script:
   - composer selfupdate
-  - composer update -o --no-interaction --prefer-stable
+  - composer clearcache
+  - composer update -o --no-interaction
   - echo "extension=memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo "extension=redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 script:
   - vendor/bin/phpunit --coverage-clover build/coverage/clover.xml
 
-after_script:
+after_success:
   - vendor/bin/codacycoverage clover build/coverage/clover.xml
+
+notifications:
+  email: false
