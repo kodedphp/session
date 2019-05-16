@@ -26,7 +26,7 @@ class MemcachedHandlerTest extends TestCase
                 'cache_limiter'           => '',
                 'gc_maxlifetime'          => 60,
 
-                'servers' => defined('CI') ? [['127.0.0.1', 11211]] : [['memcached', 11211]],
+                'servers' => defined('CI') ? [['localhost', 11211]] : [['memcached', 11211]],
                 'options' => [
                     \Memcached::OPT_DISTRIBUTION => null,
                     \Memcached::OPT_PREFIX_KEY   => 'sess.'

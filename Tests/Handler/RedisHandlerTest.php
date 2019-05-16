@@ -27,7 +27,7 @@ class RedisHandlerTest extends TestCase
                 'cache_limiter'           => '',
                 'gc_maxlifetime'          => 60,
 
-                'host' => defined('CI') ? '127.0.0.1' : 'redis'
+                'host' => defined('CI') ? 'localhost' : 'redis'
             ]
         ]);
 
