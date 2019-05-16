@@ -4,7 +4,7 @@ sudo: false
 
 php:
   - 7.2
-  - nightly
+  - 7.3
 
 services:
   - memcached
@@ -15,7 +15,7 @@ matrix:
 
 before_script:
   - composer clearcache
-  - composer update -o --no-interaction
+  - composer update -o --no-interaction --ignore-platform-reqs
   - echo "extension=memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo "extension=redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
