@@ -4,7 +4,7 @@ sudo: false
 
 php:
   - 7.2
-  - 7.3
+  - nightly
 
 services:
   - memcached
@@ -14,7 +14,6 @@ matrix:
   fast_finish: true
 
 before_script:
-  - composer selfupdate
   - composer clearcache
   - composer update -o --no-interaction
   - echo "extension=memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
