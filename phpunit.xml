@@ -28,12 +28,6 @@
         <ini name="date.timezone" value="UTC"/>
         <ini name="session.cookie_lifetime" value="42"/>
 
-        <env name="REDIS_SERVER_HOST" value="redis"/>
-
         <server name="HTTP_USER_AGENT" value="Koded/Session"/>
     </php>
-
-    <logging>
-        <log type="coverage-clover" target="build/logs/clover.xml"/>
-    </logging>
 </phpunit>

@@ -2,10 +2,10 @@ Koded Session
 =============
 
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.1.4-8892BF.svg)](https://php.net/)
-[![Build Status](https://scrutinizer-ci.com/g/kodedphp/session/badges/build.png?b=master)](https://scrutinizer-ci.com/g/kodedphp/session/build-status/master)
-[![Code Coverage](https://scrutinizer-ci.com/g/kodedphp/session/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/kodedphp/session/?branch=master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kodedphp/session/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/kodedphp/session/?branch=master)
 [![Latest Stable Version](https://img.shields.io/packagist/v/koded/session.svg)](https://packagist.org/packages/koded/session)
+[![Build Status](https://travis-ci.org/kodedphp/session.svg?branch=master)](https://travis-ci.org/kodedphp/session)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/358e1c798c0c4af8bec25a0adb2671e2)](https://www.codacy.com/app/kodeart/session)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/358e1c798c0c4af8bec25a0adb2671e2)](https://www.codacy.com/app/kodeart/session)
 [![Software license](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](LICENSE)
 
 
@@ -75,7 +75,7 @@ handler which is the PHP's default session mechanism.
 However, the `files` handler might not be desirable if your application
 runs in Docker, Kubernetes, distributed environment, etc.
 
-    The best choice for PHP sessions is Redis in almost all situations.
+> The best choice for PHP sessions is Redis in almost all situations.
 
 WARNING: Memcached may drop the session data, because it's nature. Use it with caution!
 
@@ -102,10 +102,10 @@ Redis handler
 ```
 
 A typical Redis settings:
-- 1 server
-- application + redis on the same machine
-- Redis (127.0.0.1:6379)
-- no auth (Redis is not available from outside)
+  - 1 server
+  - application + redis on the same machine
+  - Redis (127.0.0.1:6379)
+  - no auth (Redis is not available from outside)
 
 ```php
 [
@@ -150,9 +150,9 @@ Memcached handler
 ```
 
 A typical Memcached settings:
-- 1 server
-- application + memcached on the same machine
-- Memcached (127.0.0.1:11211)
+  - 1 server
+  - application + memcached on the same machine
+  - Memcached (127.0.0.1:11211)
 
 ```php
 [

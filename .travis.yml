@@ -1,0 +1,45 @@
+language: php
+
+sudo: false
+
+notifications:
+  email: false
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+services:
+  - memcached
+  - redis-server
+
+addons:
+  hosts:
+    - redis
+    - memcached
+
+php:
+  - 7.2
+  - 7.3
+  - nightly
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: nightly
+
+before_install:
+  - echo "extension=memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo "extension=redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+
+install:
+  - composer update -o --no-interaction --ignore-platform-reqs
+
+before_script:
+  - redis-cli ping
+
+script:
+  - vendor/bin/phpunit --coverage-clover build/coverage/clover.xml
+
+after_success:
+  - travis_retry php vendor/bin/codacycoverage clover build/coverage/clover.xml

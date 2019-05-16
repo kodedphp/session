@@ -17,10 +17,6 @@ class MemcachedHandlerTest extends TestCase
             $this->markTestSkipped('Memcached extension is not loaded');
         }
 
-        if (defined('CI')) {
-            $this->markTestSkipped('Memcached tests are temporarily skipped');
-        }
-
         $config = (new Config)->import([
             'session' => [
                 'name'                    => 'test',

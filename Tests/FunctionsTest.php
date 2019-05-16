@@ -44,13 +44,23 @@ class FunctionsTest extends TestCase
 
         session_register_custom_handler($config);
 
-        $this->assertEquals([
-            'lifetime' => 120,
-            'path'     => '/tmp',
-            'domain'   => '',
-            'secure'   => true,
-            'httponly' => true,
-            'samesite' => '',
-        ], session_get_cookie_params());
+        if (version_compare(PHP_MINOR_VERSION, '3', '<')) {
+            $this->assertEquals([
+                'lifetime' => 120,
+                'path'     => '/tmp',
+                'domain'   => '',
+                'secure'   => true,
+                'httponly' => true,
+            ], session_get_cookie_params());
+        } else {
+            $this->assertEquals([
+                'lifetime' => 120,
+                'path'     => '/tmp',
+                'domain'   => '',
+                'secure'   => true,
+                'httponly' => true,
+                'samesite' => '',
+            ], session_get_cookie_params());
+        }
     }
 }
