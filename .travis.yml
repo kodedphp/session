@@ -1,7 +1,13 @@
 language: php
 
+sudo: false
+
 notifications:
   email: false
+
+cache:
+  directories:
+    - $HOME/.composer/cache
 
 services:
   - memcached
@@ -17,19 +23,18 @@ matrix:
   allow_failures:
     - nightly
 
-env:
-  global:
-    - CI=true
-
 before_install:
   - echo "extension=memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo "extension=redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
-before_script:
+install:
   - composer update -o --no-interaction --ignore-platform-reqs
+
+before_script:
+  - redis-cli ping
 
 script:
   - vendor/bin/phpunit --coverage-clover build/coverage/clover.xml
 
 after_success:
-  - vendor/bin/codacycoverage clover build/coverage/clover.xml
+  - travis_retry php vendor/bin/codacycoverage clover build/coverage/clover.xml

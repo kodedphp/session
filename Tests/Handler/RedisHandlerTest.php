@@ -18,6 +18,12 @@ class RedisHandlerTest extends TestCase
             $this->markTestSkipped('Redis extension is not loaded');
         }
 
+        if (defined('CI')) {
+            $host = '127.0.0.1';
+        } else {
+            $host = 'redis';
+        }
+
         $config = (new Config)->import([
             'session' => [
                 'name'                    => 'test',
@@ -27,7 +33,7 @@ class RedisHandlerTest extends TestCase
                 'cache_limiter'           => '',
                 'gc_maxlifetime'          => 60,
 
-                'host' => defined('CI') ? 'localhost' : 'redis'
+                'host' => $host
             ]
         ]);
 

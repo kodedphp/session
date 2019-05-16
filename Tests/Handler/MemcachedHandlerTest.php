@@ -13,10 +13,14 @@ class MemcachedHandlerTest extends TestCase
 
     protected function setUp()
     {
-        $this->markTestSkipped();
-
         if (false === extension_loaded('memcached')) {
             $this->markTestSkipped('Memcached extension is not loaded');
+        }
+
+        if (defined('CI')) {
+            $servers = [['localhost', 11211]];
+        } else {
+            $servers = [['memcached', 11211]];
         }
 
         $config = (new Config)->import([
@@ -28,7 +32,7 @@ class MemcachedHandlerTest extends TestCase
                 'cache_limiter'           => '',
                 'gc_maxlifetime'          => 60,
 
-                'servers' => defined('CI') ? [['localhost', 11211]] : [['memcached', 11211]],
+                'servers' => $servers,
                 'options' => [
                     \Memcached::OPT_DISTRIBUTION => null,
                     \Memcached::OPT_PREFIX_KEY   => 'sess.'
