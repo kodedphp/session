@@ -5,6 +5,7 @@ Koded Session
 [![Latest Stable Version](https://img.shields.io/packagist/v/koded/session.svg)](https://packagist.org/packages/koded/session)
 [![Build Status](https://travis-ci.org/kodedphp/session.svg?branch=master)](https://travis-ci.org/kodedphp/session)
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/358e1c798c0c4af8bec25a0adb2671e2)](https://www.codacy.com/app/kodeart/session)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/358e1c798c0c4af8bec25a0adb2671e2)](https://www.codacy.com/app/kodeart/session)
 [![Software license](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](LICENSE)
 
 
