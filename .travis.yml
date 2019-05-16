@@ -15,7 +15,6 @@ before_script:
   - composer update -o --no-interaction --ignore-platform-reqs
   - echo "extension=memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo "extension=redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - redis-server
 
 script:
   - vendor/bin/phpunit --coverage-clover build/coverage/clover.xml
