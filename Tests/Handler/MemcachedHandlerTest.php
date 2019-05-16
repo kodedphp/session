@@ -13,6 +13,8 @@ class MemcachedHandlerTest extends TestCase
 
     protected function setUp()
     {
+        $this->markTestSkipped();
+
         if (false === extension_loaded('memcached')) {
             $this->markTestSkipped('Memcached extension is not loaded');
         }
