@@ -56,13 +56,14 @@ class SessionAuthenticatedMiddlewareTest extends TestCase
 
         $this->assertEquals('', $response->getHeaderLine('location'));
         $this->assertSame(StatusCode::UNAUTHORIZED, $response->getStatusCode());
-        $this->assertSame('{"location":"\/signin","status":401}', (string)$response->getBody());
+        $this->assertSame('{"location":"/signin","status":401}', (string)$response->getBody());
     }
 
     public function test_process_when_authenticated()
     {
         $_SESSION[SessionAuthenticatedMiddleware::AUTHENTICATED] = true;
-        $handler                                                 = new class implements RequestHandlerInterface
+        
+        $handler = new class implements RequestHandlerInterface
         {
             public function handle(ServerRequestInterface $request): ResponseInterface
             {

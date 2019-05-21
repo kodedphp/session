@@ -16,6 +16,7 @@ use Koded\Http\{ServerResponse, StatusCode};
 use Koded\Stdlib\Interfaces\ConfigurationFactory;
 use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
 use Psr\Http\Server\{MiddlewareInterface, RequestHandlerInterface};
+use function Koded\Stdlib\json_serialize;
 
 
 class SessionAuthenticatedMiddleware implements MiddlewareInterface
@@ -38,7 +39,7 @@ class SessionAuthenticatedMiddleware implements MiddlewareInterface
 
         // Ajax requests should be handled in the browser
         if ('XMLHTTPREQUEST' === strtoupper($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '')) {
-            return (new ServerResponse(json_encode([
+            return (new ServerResponse(json_serialize([
                 'location' => $this->redirectTo,
                 'status'   => StatusCode::UNAUTHORIZED
             ]), StatusCode::UNAUTHORIZED));
