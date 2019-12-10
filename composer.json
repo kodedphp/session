@@ -44,11 +44,11 @@
     },
     "require-dev": {
         "phpunit/phpunit": "~7",
-        "codacy/coverage": "dev-master"
+        "scrutinizer/ocular": "^1.6"
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0-dev"
+            "dev-master": "1.x-dev"
         }
     }
 }

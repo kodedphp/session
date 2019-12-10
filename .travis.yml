@@ -19,9 +19,10 @@ addons:
     - memcached
 
 php:
-  - 7.1
   - 7.2
   - 7.3
+  - 7.4
+  - nightly
 
 matrix:
   fast_finish: true
@@ -40,4 +41,4 @@ script:
   - vendor/bin/phpunit --coverage-clover build/coverage/clover.xml
 
 after_success:
-  - travis_retry vendor/bin/codacycoverage clover build/coverage/clover.xml
+  - travis_retry vendor/bin/ocular code-coverage:upload --format=php-clover build/coverage/clover.xml
