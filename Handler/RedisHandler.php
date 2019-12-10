@@ -56,11 +56,7 @@ final class RedisHandler implements SessionHandlerInterface
 
     public function write($sessionId, $sessionData): bool
     {
-        if ($this->ttl > 0) {
-            return $this->client->setex($sessionId, $this->ttl, $sessionData);
-        }
-
-        return $this->client->set($sessionId, $sessionData, $this->ttl);
+        return $this->client->setex($sessionId, $this->ttl, $sessionData);
     }
 
     public function open($savePath, $sessionId): bool
