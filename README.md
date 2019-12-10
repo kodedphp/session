@@ -4,7 +4,8 @@ Koded Session
 [![Latest Stable Version](https://img.shields.io/packagist/v/koded/session.svg)](https://packagist.org/packages/koded/session)
 [![Build Status](https://travis-ci.org/kodedphp/session.svg?branch=master)](https://travis-ci.org/kodedphp/session)
 [![Code Coverage](https://scrutinizer-ci.com/g/kodedphp/session/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/kodedphp/session/?branch=master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kodedphp/session/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/kodedphp/session/?[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.1.4-8892BF.svg)](https://php.net/)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kodedphp/session/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/kodedphp/container/?branch=master)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.3-8892BF.svg)](https://php.net/)
 [![Software license](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](LICENSE)
 
 
