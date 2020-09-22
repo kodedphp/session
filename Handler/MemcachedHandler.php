@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of the Koded package.
  *
@@ -7,32 +6,31 @@
  *
  * Please view the LICENSE distributed with this source code
  * for the full copyright and license information.
- *
  */
-
 namespace Koded\Session\Handler;
 
 use Koded\Session\SessionConfiguration;
 use SessionHandlerInterface;
 use function Koded\Caching\simple_cache_factory;
 
-
 final class MemcachedHandler implements SessionHandlerInterface
 {
-    /** @var int */
-    protected $ttl;
-
-    /** @var \Memcached */
-    private $client;
+    protected int $ttl;
+    private \Memcached $client;
+    private array $settings;
 
     public function __construct(SessionConfiguration $settings)
     {
-        $this->ttl    = (int)$settings->get('gc_maxlifetime', ini_get('session.gc_maxlifetime'));
-        $this->client = simple_cache_factory('memcached', $this->configuration($settings))->client();
+        //ini_set('session.gc_probability', '0');
+        $this->settings = $this->configuration($settings);
+        if (1 > $this->ttl = (int)session_get_cookie_params()['lifetime']) {
+            $this->ttl = (int)ini_get('session.gc_maxlifetime');
+        }
     }
 
     public function close(): bool
     {
+        $this->client->quit();
         return true;
     }
 
@@ -43,6 +41,7 @@ final class MemcachedHandler implements SessionHandlerInterface
 
     public function open($savePath, $sessionId): bool
     {
+        $this->client = simple_cache_factory('memcached', $this->settings)->client();
         return true;
     }
 
@@ -53,7 +52,7 @@ final class MemcachedHandler implements SessionHandlerInterface
 
     public function write($sessionId, $sessionData): bool
     {
-        return $this->client->set($sessionId, $sessionData, $this->ttl + time());
+        return $this->client->set($sessionId, $sessionData, time() + $this->ttl);
     }
 
     /**
@@ -67,8 +66,8 @@ final class MemcachedHandler implements SessionHandlerInterface
     private function configuration(SessionConfiguration $settings): array
     {
         return [
-            'servers' => (array)$settings->get('servers', [['127.0.0.1', 11211]]),
             'id'      => (string)$settings->get('id', $settings->get('name', ini_get('session.name'))),
+            'servers' => (array)$settings->get('servers', [['127.0.0.1', 11211]]),
             'options' => (array)$settings->get('options', []) + [
                     \Memcached::OPT_PREFIX_KEY => (string)$settings->get('prefix', 'session.')
                 ]
