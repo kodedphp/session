@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of the Koded package.
  *
@@ -7,19 +6,15 @@
  *
  * Please view the LICENSE distributed with this source code
  * for the full copyright and license information.
- *
  */
-
 namespace Koded\Session;
 
+use Countable;
 use Koded\Exceptions\KodedException;
-use Koded\Stdlib\{Immutable, UUID};
-use Koded\Stdlib\Interfaces\Data;
+use Koded\Stdlib\{Data, Immutable, UUID};
 
-
-interface Session
+interface Session extends Countable
 {
-
     /**
      * The timestamp when session started.
      */
@@ -52,7 +47,7 @@ interface Session
 
     public function import(array $data): Session;
 
-    public function remove(string $name): void;
+    public function remove(string $name): Session;
 
     public function all(): array;
 
@@ -105,6 +100,8 @@ interface Session
 
     public function isEmpty(): bool;
 
+    public function isStarted(): bool;
+
     public function count(): int;
 
     public function flash(string $name, $value = null);
@@ -115,30 +112,11 @@ interface Session
  */
 final class PhpSession implements Session
 {
-    /**
-     * @var bool
-     */
-    private $accessed = false;
-
-    /**
-     * @var bool
-     */
-    private $modified = false;
-
-    /**
-     * @var float
-     */
-    private $stamp = 0;
-
-    /**
-     * @var string
-     */
-    private $agent = '';
-
-    /**
-     * @var string
-     */
-    private $token = '';
+    private bool $accessed;
+    private bool $modified;
+    private float $stamp = 0.0;
+    private string $agent = '';
+    private string $token = '';
 
     public function __construct()
     {
@@ -148,17 +126,20 @@ final class PhpSession implements Session
             $_SESSION = [];
         }
         // @codeCoverageIgnoreEnd
-
         $this->loadMetadata();
         $this->accessed = false;
         $this->modified = false;
         session($this);
     }
 
+    public function __destruct()
+    {
+        $_SESSION = $this->getMetadata() + $_SESSION;
+    }
+
     public function get(string $name, $default = null)
     {
         $this->accessed = true;
-
         return $_SESSION[$name] ?? $default;
     }
 
@@ -170,8 +151,7 @@ final class PhpSession implements Session
     public function all(): array
     {
         $this->accessed = true;
-
-        return (array)$_SESSION + $this->getMetadata();
+        return $this->getMetadata() + (array)$_SESSION;
     }
 
     public function __set(string $name, $value)
@@ -182,14 +162,12 @@ final class PhpSession implements Session
     public function toArray(): array
     {
         $this->accessed = true;
-
         return $_SESSION ?? [];
     }
 
     public function toData(): Data
     {
         $this->accessed = true;
-
         return new Immutable($_SESSION ?? []);
     }
 
@@ -201,9 +179,12 @@ final class PhpSession implements Session
 
     public function set(string $name, $value): Session
     {
+        $n = strtolower($name);
+        if ($n === self::STAMP && $n === self::TOKEN && $n === self::AGENT) {
+            return $this;
+        }
         $this->modified  = true;
         $_SESSION[$name] = $value;
-
         return $this;
     }
 
@@ -214,26 +195,29 @@ final class PhpSession implements Session
 
     public function import(array $data): Session
     {
-        $data     = array_filter($data, 'is_string', ARRAY_FILTER_USE_KEY);
-        $_SESSION = array_replace($_SESSION, $data);
-
         $this->modified = true;
-
+        $data = array_filter($data, 'is_string', ARRAY_FILTER_USE_KEY);
+        $this->excludeMetadata($data);
+        $_SESSION = array_replace($_SESSION, $data);
         return $this;
     }
 
     public function pull(string $name, $default = null)
     {
+        $n = strtolower($name);
+        if ($n === self::STAMP && $n === self::TOKEN && $n === self::AGENT) {
+            return $default;
+        }
         $value = $_SESSION[$name] ?? $default;
         unset($_SESSION[$name]);
-
         return $value;
     }
 
-    public function remove(string $name): void
+    public function remove(string $name): Session
     {
         $this->modified = true;
         unset($_SESSION[$name]);
+        return $this;
     }
 
     public function flash(string $name, $value = null)
@@ -243,9 +227,7 @@ final class PhpSession implements Session
         } else {
             $_SESSION[self::FLASH][$name] = $value;
         }
-
         $this->modified = true;
-
         return $value;
     }
 
@@ -265,7 +247,6 @@ final class PhpSession implements Session
         $oldSession = $_SESSION;
         $_SESSION   = [];
         $this->import($data);
-
         return $oldSession;
     }
 
@@ -273,32 +254,26 @@ final class PhpSession implements Session
     {
         $_SESSION       = [];
         $this->modified = true;
-
         return empty($_SESSION);
     }
 
     public function regenerate(bool $deleteOldSession = false): bool
     {
         $_SESSION[self::TOKEN] = $this->token = UUID::v4();
-
         return session_regenerate_id($deleteOldSession);
     }
 
     public function destroy(): bool
     {
         session_write_close();
-
         // @codeCoverageIgnoreStart
         if (false === session_start()) {
             return false;
         }
         // @codeCoverageIgnoreEnd
-
         $updated = session_regenerate_id(true);
-
-        $this->replace([]);
+        $_SESSION = [];
         $this->resetMetadata();
-
         return $updated;
     }
 
@@ -337,6 +312,11 @@ final class PhpSession implements Session
         return 0 === $this->count();
     }
 
+    public function isStarted(): bool
+    {
+        return PHP_SESSION_ACTIVE === session_status();
+    }
+
     public function count(): int
     {
         return count($_SESSION);
@@ -353,16 +333,17 @@ final class PhpSession implements Session
      */
     private function loadMetadata(): void
     {
-        $this->stamp = $this->pull(self::STAMP, microtime(true));
-        $this->agent = $this->pull(self::AGENT, $_SERVER['HTTP_USER_AGENT'] ?? '');
-        $this->token = $this->pull(self::TOKEN, UUID::v4());
+        $this->stamp = $_SESSION[self::STAMP] ?? microtime(true);
+        $this->agent = $_SESSION[self::AGENT] ?? ($_SERVER['HTTP_USER_AGENT'] ?? '');
+        $this->token = $_SESSION[self::TOKEN] ?? UUID::v4();
+        $this->excludeMetadata($_SESSION);
     }
 
     private function resetMetadata(): void
     {
-        $_SESSION[self::STAMP] = $this->stamp = microtime(true);
-        $_SESSION[self::AGENT] = $this->agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
-        $_SESSION[self::TOKEN] = $this->token = UUID::v4();
+        $this->stamp = microtime(true);
+        $this->agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+        $this->token = UUID::v4();
     }
 
     private function getMetadata(): array
@@ -372,6 +353,15 @@ final class PhpSession implements Session
             self::AGENT => $this->agent,
             self::TOKEN => $this->token,
         ];
+    }
+
+    private function excludeMetadata(array &$data): void
+    {
+        unset(
+            $data[self::AGENT],
+            $data[self::TOKEN],
+            $data[self::STAMP]
+        );
     }
 }
 
@@ -386,7 +376,7 @@ class SessionException extends KodedException
         self::E_HANDLER_NOT_FOUND => 'Failed to load the session handler class. Requested :handler',
     ];
 
-    public static function forNotFoundHandler(string $handler): SessionException
+    public static function forHandlerNotFound(string $handler): SessionException
     {
         return new self(self::E_HANDLER_NOT_FOUND, [':handler' => $handler]);
     }
