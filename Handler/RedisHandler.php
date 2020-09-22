@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of the Koded package.
  *
@@ -7,32 +6,43 @@
  *
  * Please view the LICENSE distributed with this source code
  * for the full copyright and license information.
- *
  */
-
 namespace Koded\Session\Handler;
 
 use Koded\Session\SessionConfiguration;
 use SessionHandlerInterface;
 use function Koded\Caching\simple_cache_factory;
-
+use function Koded\Stdlib\{json_serialize, json_unserialize};
 
 final class RedisHandler implements SessionHandlerInterface
 {
-    /** @var int */
-    protected $ttl;
-
-    /** @var \Redis */
-    private $client;
+    protected int $ttl;
+    private \Redis $client;
+    private array $settings;
 
     public function __construct(SessionConfiguration $settings)
     {
-        $this->ttl    = (int)$settings->get('gc_maxlifetime', ini_get('session.gc_maxlifetime'));
-        $this->client = simple_cache_factory('redis', $this->configuration($settings))->client();
+        //ini_set('session.gc_probability', '0');
+//        if (1 > $this->ttl = (int)session_get_cookie_params()['lifetime']) {
+            $this->ttl = (int)ini_get('session.gc_maxlifetime');
+//        }
+        $this->settings = [
+            'prefix'  => (string)$settings->get('prefix', 'session.'),
+            'host'    => (string)$settings->get('host'),
+            'port'    => (int)$settings->get('port', 6379),
+            'timeout' => (float)$settings->get('timeout', 0.0),
+            'retry'   => (int)$settings->get('retry', 0),
+            'db'      => (int)$settings->get('db', 0),
+
+//            'serializer' => (string)$settings->get('serializer', 'json'),
+//            'binary' => (string)$settings->get('binary', 'json'),
+//            'ttl' => $this->ttl,
+        ];
     }
 
     public function close(): bool
     {
+        $this->client->close();
         return true;
     }
 
@@ -52,27 +62,28 @@ final class RedisHandler implements SessionHandlerInterface
     public function read($sessionId): string
     {
         return $this->client->get($sessionId) ?: '';
+
+        //$_SESSION = (array)json_unserialize($this->client->get($sessionId) ?: '[]');
+        //return '';
     }
 
     public function write($sessionId, $sessionData): bool
     {
-        return $this->client->setex($sessionId, $this->ttl, $sessionData);
+//        error_log('-- (redis) cookie.lifetime: ' . session_get_cookie_params()['lifetime']);
+//        error_log('-- (redis) ttl: ' . $this->ttl());
+
+        return $this->client->setex($sessionId, $this->ttl(), $sessionData);
+        //return $this->client->setex($sessionId, $this->ttl(), json_serialize($_SESSION));
     }
 
     public function open($savePath, $sessionId): bool
     {
+        $this->client = simple_cache_factory('redis', $this->settings)->client();
         return true;
     }
 
-    private function configuration(SessionConfiguration $settings): array
+    private function ttl(): int
     {
-        return [
-            'prefix'  => (string)$settings->get('prefix', 'session:'),
-            'host'    => (string)$settings->get('host'),
-            'port'    => (int)$settings->get('port', 6379),
-            'timeout' => (float)$settings->get('timeout', 0.0),
-            'retry'   => (int)$settings->get('retry', 0),
-            'db'      => (int)$settings->get('db', 0),
-        ];
+        return (int)ini_get('session.gc_maxlifetime');
     }
 }
