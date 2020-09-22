@@ -4,6 +4,7 @@
          bootstrap="Tests/bootstrap.php"
          processIsolation="true"
          stopOnError="true"
+         stopOnFailure="true"
          verbose="true"
          colors="true">
     <testsuites>
