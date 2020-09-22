@@ -46,11 +46,16 @@ trait SessionTestCaseTrait
         $this->SUT->replace(['foo' => 'bar', 'qux' => 'zim']);
         $this->assertEquals(2, $this->SUT->count(), 'Expecting 2 items in the session');
 
-        $this->SUT->remove('foo');
+        $s = $this->SUT->remove('foo');
+        $this->assertInstanceOf(Session::class, $s);
+
         $this->assertEquals(1, $this->SUT->count(), 'Should be 1 item in the session');
         $this->assertFalse($this->SUT->has('foo'), 'Only qux should be set');
         $this->assertTrue($this->SUT->has('qux'));
         $this->assertTrue($this->SUT->modified());
+
+        $s = $this->SUT->remove('non-existent-key');
+        $this->assertSame($s, $this->SUT);
     }
 
     public function test_all()
@@ -196,8 +201,8 @@ trait SessionTestCaseTrait
     public function test_starttime()
     {
         $starttime = time();
-        $this->assertGreaterThanOrEqual($starttime, $this->SUT->starttime());
-        $this->assertInternalType('integer', $starttime);
+        $this->assertGreaterThanOrEqual($starttime, (int)$this->SUT->starttime());
+        $this->assertSame('integer', gettype($starttime));
         $this->assertFalse($this->SUT->accessed(), 'This method does not flag the session accessed');
     }
 
