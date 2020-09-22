@@ -8,15 +8,17 @@ build:
       environment:
         php:
           version: '7.3'
-  dependencies:
-    override:
-      - composer install --no-interaction --prefer-source
+
+before_commands:
+  - 'composer update -o --prefer-source --no-interaction'
 
 filter:
   excluded_paths:
-    - 'Tests/'
-    - 'vendor/'
+    - 'build/*'
+    - 'Tests/*'
+    - 'vendor/*'
 
 tools:
-  php_analyzer: true
   external_code_coverage: true
+  php_analyzer: true
+  php_code_sniffer: true
