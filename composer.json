@@ -15,11 +15,12 @@
             "homepage": "https://github.com/kodedphp/session"
         }
     ],
+    "prefer-stable": true,
     "require": {
-        "php": "~7.3",
+        "php": "^7.2|^8",
         "psr/http-server-middleware": "~1",
-        "koded/cache-simple": "~2",
-        "koded/http": "~1",
+        "koded/cache-simple": "^2|^3",
+        "koded/http": "^2|^3",
         "ext-json": "*"
     },
     "autoload": {
@@ -43,12 +44,6 @@
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "~7",
-        "scrutinizer/ocular": "^1.6"
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.x-dev"
-        }
+        "phpunit/phpunit": "~7"
     }
 }
