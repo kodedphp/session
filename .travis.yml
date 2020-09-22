@@ -1,22 +1,9 @@
 language: php
-
-sudo: false
+os: linux
+dist: xenial
 
 notifications:
   email: false
-
-cache:
-  directories:
-    - $HOME/.composer/cache
-
-services:
-  - memcached
-  - redis-server
-
-addons:
-  hosts:
-    - redis
-    - memcached
 
 php:
   - 7.2
@@ -24,23 +11,37 @@ php:
   - 7.4
   - nightly
 
-matrix:
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+jobs:
   fast_finish: true
   allow_failures:
     - php: nightly
+
+services:
+  - memcached
+  - redis
+
+addons:
+  hosts:
+    - redis
+    - memcached
 
 before_install:
   - echo "extension=memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo "extension=redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
-install:
-  - composer update -o --no-interaction --ignore-platform-reqs
-
 before_script:
   - redis-cli ping
 
-script:
-  - vendor/bin/phpunit --coverage-clover build/coverage/clover.xml
+install:
+  - composer update -o --prefer-source --no-interaction
 
-after_success:
-  - travis_retry vendor/bin/ocular code-coverage:upload --format=php-clover build/coverage/clover.xml
+script:
+  - vendor/bin/phpunit --coverage-clover build/clover.xml
+
+after_script:
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover build/clover.xml
