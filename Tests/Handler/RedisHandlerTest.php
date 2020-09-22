@@ -9,7 +9,6 @@ use function Koded\Session\session_register_custom_handler;
 
 class RedisHandlerTest extends TestCase
 {
-
     use SessionTestCaseTrait;
 
     protected function setUp()
