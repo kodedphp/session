@@ -132,6 +132,11 @@ final class PhpSession implements Session
         session($this);
     }
 
+    public function __destruct()
+    {
+        $_SESSION = $this->getMetadata() + $_SESSION;
+    }
+
     public function get(string $name, $default = null)
     {
         $this->accessed = true;
