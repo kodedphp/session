@@ -132,11 +132,6 @@ final class PhpSession implements Session
         session($this);
     }
 
-    public function __destruct()
-    {
-        $_SESSION = $this->getMetadata() + $_SESSION;
-    }
-
     public function get(string $name, $default = null)
     {
         $this->accessed = true;
@@ -259,7 +254,7 @@ final class PhpSession implements Session
 
     public function regenerate(bool $deleteOldSession = false): bool
     {
-        $_SESSION[self::TOKEN] = $this->token = UUID::v4();
+        $this->token = UUID::v4();
         return session_regenerate_id($deleteOldSession);
     }
 
