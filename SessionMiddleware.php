@@ -28,6 +28,10 @@ class SessionMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        if (PHP_SESSION_ACTIVE === session_status()) {
+            return $handler->handle($request);
+        }
+
         session_start($this->options);
         $request = $request->withAttribute(self::SESSION_STARTED, PHP_SESSION_ACTIVE === session_status());
 
