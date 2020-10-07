@@ -16,28 +16,26 @@ use Psr\Http\Server\{MiddlewareInterface, RequestHandlerInterface};
 
 class SessionMiddleware implements MiddlewareInterface
 {
-    public const SESSION_STARTED = 'sessionStarted';
-    public const SESSION_EXPIRE_IN = 'X-Session-ExpireIn';
+    //public const SESSION_TTL = 'X-Session-Ttl';
 
-    private array $options;
+    //private array $options;
 
     public function __construct(Configuration $settings)
     {
-        $this->options = session_register_custom_handler($settings)->sessionParameters();
+        //$this->options = session_register_custom_handler($settings)->sessionParameters();
+        session_start(session_register_custom_handler($settings)->sessionParameters());
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (PHP_SESSION_ACTIVE === session_status()) {
-            return $handler->handle($request);
-        }
-
-        session_start($this->options);
-        $request = $request->withAttribute(self::SESSION_STARTED, PHP_SESSION_ACTIVE === session_status());
+        //if (PHP_SESSION_ACTIVE === session_status()) {
+        //    return $handler->handle($request);
+        //}
+        //session_start($this->options);
 
         $response = $handler->handle($request);
 
-//        $expireIn = $response->getHeaderLine(self::SESSION_EXPIRE_IN);
+//        $expireIn = $response->getHeaderLine(self::SESSION_TTL);
 //        if ($response->getStatusCode() < StatusCode::INTERNAL_SERVER_ERROR) {
             session_write_close();
             session_start();
