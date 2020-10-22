@@ -18,7 +18,7 @@
   "prefer-stable": true,
   "minimum-stability": "dev",
   "require": {
-    "php": "8.0.0beta2 as 7.2",
+    "php": "8.0.0RC2 as 7.3",
     "psr/http-server-middleware": "~1",
     "koded/cache-simple": "3.*",
     "koded/http": "3.*",
