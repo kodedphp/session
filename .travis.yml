@@ -6,8 +6,8 @@ notifications:
   email: false
 
 php:
-  - '8'
-  - 'nightly'
+  - 8.0
+  - nightly
 
 cache:
   directories:
