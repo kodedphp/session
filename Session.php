@@ -179,7 +179,7 @@ final class PhpSession implements Session
 
     public function set(string $name, $value): Session
     {
-        $n = strtolower($name);
+        $n = \strtolower($name);
         if ($n === self::STAMP && $n === self::TOKEN && $n === self::AGENT) {
             return $this;
         }
@@ -196,15 +196,15 @@ final class PhpSession implements Session
     public function import(array $data): Session
     {
         $this->modified = true;
-        $data = array_filter($data, 'is_string', ARRAY_FILTER_USE_KEY);
+        $data = \array_filter($data, 'is_string', ARRAY_FILTER_USE_KEY);
         $this->excludeMetadata($data);
-        $_SESSION = array_replace($_SESSION, $data);
+        $_SESSION = \array_replace($_SESSION, $data);
         return $this;
     }
 
     public function pull(string $name, $default = null)
     {
-        $n = strtolower($name);
+        $n = \strtolower($name);
         if ($n === self::STAMP && $n === self::TOKEN && $n === self::AGENT) {
             return $default;
         }
@@ -233,7 +233,7 @@ final class PhpSession implements Session
 
     public function has(string $name): bool
     {
-        return array_key_exists($name, $_SESSION ?? []);
+        return \array_key_exists($name, $_SESSION ?? []);
     }
 
     /*
@@ -260,18 +260,18 @@ final class PhpSession implements Session
     public function regenerate(bool $deleteOldSession = false): bool
     {
         $this->token = UUID::v4();
-        return session_regenerate_id($deleteOldSession);
+        return \session_regenerate_id($deleteOldSession);
     }
 
     public function destroy(): bool
     {
-        session_write_close();
+        \session_write_close();
         // @codeCoverageIgnoreStart
-        if (false === session_start()) {
+        if (false === \session_start()) {
             return false;
         }
         // @codeCoverageIgnoreEnd
-        $updated = session_regenerate_id(true);
+        $updated = \session_regenerate_id(true);
         $_SESSION = [];
         $this->resetMetadata();
         return $updated;
@@ -279,7 +279,7 @@ final class PhpSession implements Session
 
     public function id(): string
     {
-        return session_id();
+        return \session_id();
     }
 
     public function accessed(): bool
@@ -314,12 +314,12 @@ final class PhpSession implements Session
 
     public function isStarted(): bool
     {
-        return PHP_SESSION_ACTIVE === session_status();
+        return PHP_SESSION_ACTIVE === \session_status();
     }
 
     public function count(): int
     {
-        return count($_SESSION);
+        return \count($_SESSION);
     }
 
     /*
@@ -333,7 +333,7 @@ final class PhpSession implements Session
      */
     private function loadMetadata(): void
     {
-        $this->stamp = $_SESSION[self::STAMP] ?? microtime(true);
+        $this->stamp = $_SESSION[self::STAMP] ?? \microtime(true);
         $this->agent = $_SESSION[self::AGENT] ?? ($_SERVER['HTTP_USER_AGENT'] ?? '');
         $this->token = $_SESSION[self::TOKEN] ?? UUID::v4();
         $this->excludeMetadata($_SESSION);
@@ -341,7 +341,7 @@ final class PhpSession implements Session
 
     private function resetMetadata(): void
     {
-        $this->stamp = microtime(true);
+        $this->stamp = \microtime(true);
         $this->agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
         $this->token = UUID::v4();
     }

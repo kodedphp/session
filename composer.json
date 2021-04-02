@@ -19,20 +19,21 @@
   "minimum-stability": "dev",
   "require": {
     "php": "^8",
-    "psr/http-server-middleware": "~1",
+    "psr/http-server-middleware": "^1",
     "koded/cache-simple": "3.*",
     "koded/http": "3.*",
     "ext-json": "*"
   },
   "autoload": {
-    "psr-4": {
-      "Koded\\Session\\": ""
-    },
+    "classmap": [
+      ""
+    ],
     "files": [
       "functions.php"
     ],
     "exclude-from-classmap": [
-      "/Tests/"
+      "Tests/",
+      "build/"
     ]
   },
   "suggest": {
@@ -41,11 +42,11 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Koded\\Session\\": "Tests/"
+      "Tests\\Koded\\Session\\": "Tests/"
     }
   },
   "require-dev": {
-    "phpunit/phpunit": "~7"
+    "phpunit/phpunit": "^9"
   },
   "config": {
     "optimize-autoloader": true

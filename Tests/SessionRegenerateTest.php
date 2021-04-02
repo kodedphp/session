@@ -1,7 +1,9 @@
 <?php
 
-namespace Koded\Session;
+namespace Tests\Koded\Session;
 
+use Koded\Session\PhpSession;
+use Koded\Session\Session;
 use PHPUnit\Framework\TestCase;
 
 class SessionRegenerateTest extends TestCase

@@ -1,7 +1,9 @@
 <?php
 
-namespace Koded\Session;
+namespace Tests\Koded\Session;
 
+use Koded\Session\SessionConfiguration;
+use Koded\Session\SessionMiddleware;
 use Koded\Http\{ServerRequest, ServerResponse};
 use Koded\Stdlib\Config;
 use PHPUnit\Framework\Assert;
@@ -11,8 +13,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class SessionMiddlewareTest extends TestCase
 {
-    /** @var  SessionMiddleware */
-    private $middleware;
+    private SessionMiddleware $middleware;
 
     public function test_should_start_the_session_and_close_the_session()
     {
@@ -48,7 +49,7 @@ class SessionMiddlewareTest extends TestCase
         $this->assertSame(PHP_SESSION_ACTIVE, session_status());
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->markTestSkipped('WIP: need more research...');
 
@@ -59,7 +60,7 @@ class SessionMiddlewareTest extends TestCase
         $this->middleware = new SessionMiddleware($settings);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         session_write_close();
     }

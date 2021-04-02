@@ -1,7 +1,8 @@
 <?php
 
-namespace Koded\Session;
+namespace Tests\Koded\Session;
 
+use Koded\Session\SessionConfiguration;
 use Koded\Stdlib\Config;
 use PHPUnit\Framework\TestCase;
 

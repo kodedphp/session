@@ -1,17 +1,18 @@
 <?php
 
-namespace Koded\Session\Handler;
+namespace Tests\Koded\Session\Handler;
 
-use Koded\Session\{PhpSession, SessionTestCaseTrait};
+use Koded\Session\PhpSession;
 use Koded\Stdlib\Config;
 use PHPUnit\Framework\TestCase;
+use Tests\Koded\Session\SessionTestCaseTrait;
 use function Koded\Session\session_register_custom_handler;
 
 class FilesHandlerTest extends TestCase
 {
     use SessionTestCaseTrait;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $config = new Config;
 

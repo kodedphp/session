@@ -33,7 +33,7 @@ class SessionAuthenticatedMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
         // Ajax requests should be handled in the browser
-        if ('XMLHTTPREQUEST' === strtoupper($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '')) {
+        if ('XMLHTTPREQUEST' === \strtoupper($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '')) {
             return (new ServerResponse(json_serialize([
                 'location' => $this->redirectTo,
                 'status'   => StatusCode::UNAUTHORIZED

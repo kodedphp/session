@@ -23,7 +23,9 @@ class SessionMiddleware implements MiddlewareInterface
     public function __construct(Configuration $settings)
     {
         //$this->options = session_register_custom_handler($settings)->sessionParameters();
-        session_start(session_register_custom_handler($settings)->sessionParameters());
+        \session_start(
+            session_register_custom_handler($settings)->sessionParameters()
+        );
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -37,8 +39,8 @@ class SessionMiddleware implements MiddlewareInterface
 
 //        $expireIn = $response->getHeaderLine(self::SESSION_TTL);
 //        if ($response->getStatusCode() < StatusCode::INTERNAL_SERVER_ERROR) {
-            session_write_close();
-            session_start();
+            \session_write_close();
+            \session_start();
 //        }
 
         return $response;

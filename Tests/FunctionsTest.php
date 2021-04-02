@@ -1,9 +1,14 @@
 <?php
 
-namespace Koded\Session;
+namespace Tests\Koded\Session;
 
+use Koded\Session\SessionConfiguration;
+use Koded\Session\SessionException;
 use Koded\Stdlib\Config;
 use PHPUnit\Framework\TestCase;
+use function Koded\Session\session;
+use function Koded\Session\session_create_custom_handler;
+use function Koded\Session\session_register_custom_handler;
 
 class FunctionsTest extends TestCase
 {
