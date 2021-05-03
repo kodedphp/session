@@ -372,7 +372,7 @@ class SessionException extends KodedException
 {
     private const E_HANDLER_NOT_FOUND = 0;
 
-    protected $messages = [
+    protected array $messages = [
         self::E_HANDLER_NOT_FOUND => 'Failed to load the session handler class. Requested :handler',
     ];
 
