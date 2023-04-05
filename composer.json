@@ -18,7 +18,7 @@
   "require": {
     "php": "^8",
     "psr/http-server-middleware": "^1",
-    "koded/stdlib": "6.0.2 as 5.1.1",
+    "koded/stdlib": "^6",
     "koded/cache-simple": "^3",
     "koded/http": "^3|^4",
     "ext-json": "*"
