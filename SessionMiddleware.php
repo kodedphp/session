@@ -13,36 +13,37 @@ use Koded\Http\StatusCode;
 use Koded\Stdlib\Configuration;
 use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
 use Psr\Http\Server\{MiddlewareInterface, RequestHandlerInterface};
+use function session_start;
+use function session_status;
+use function session_write_close;
 
 class SessionMiddleware implements MiddlewareInterface
 {
-    //public const SESSION_TTL = 'X-Session-Ttl';
-
-    //private array $options;
+    private array $options;
 
     public function __construct(Configuration $settings)
     {
-        //$this->options = session_register_custom_handler($settings)->sessionParameters();
-        \session_start(
-            session_register_custom_handler($settings)->sessionParameters()
-        );
+        $this->options = session_register_custom_handler($settings)
+            ->sessionParameters();
     }
 
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler): ResponseInterface
     {
-        //if (PHP_SESSION_ACTIVE === session_status()) {
-        //    return $handler->handle($request);
-        //}
-        //session_start($this->options);
-
+        if ('OPTIONS' === $request->getMethod()) {
+            return $handler->handle($request);
+        }
+        session_start($this->options);
         $response = $handler->handle($request);
-
-//        $expireIn = $response->getHeaderLine(self::SESSION_TTL);
-//        if ($response->getStatusCode() < StatusCode::INTERNAL_SERVER_ERROR) {
-            \session_write_close();
-            \session_start();
-//        }
-
+        if ('OPTIONS' === $request->getMethod()) {
+            return $response;
+        }
+        if (PHP_SESSION_ACTIVE === session_status()
+            && $response->getStatusCode() < StatusCode::INTERNAL_SERVER_ERROR) {
+            session_write_close();
+            session_start($this->options);
+        }
         return $response;
     }
 }
