@@ -7,7 +7,7 @@ build:
           - php-scrutinizer-run
       environment:
         php:
-          version: '8.0'
+          version: '8.1.2'
 
 before_commands:
   - 'composer update -o --prefer-source --no-interaction'
@@ -19,6 +19,6 @@ filter:
     - 'vendor/*'
 
 tools:
-  external_code_coverage: true
   php_analyzer: true
   php_code_sniffer: true
+  external_code_coverage: true
