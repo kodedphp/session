@@ -219,6 +219,6 @@ trait SessionTestCaseTrait
 
     protected function tearDown(): void
     {
-        \session_write_close();
+        @session_write_close();
     }
 }
