@@ -12,8 +12,6 @@
             <directory>./Tests</directory>
         </testsuite>
     </testsuites>
-
-    <!-- code coverage -->
     <coverage>
         <include>
             <directory suffix=".php">./</directory>
@@ -24,7 +22,6 @@
             <directory>Tests</directory>
         </exclude>
     </coverage>
-
     <php>
         <ini name="date.timezone" value="UTC"/>
         <ini name="session.cookie_lifetime" value="42"/>
