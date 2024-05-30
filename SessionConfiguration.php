@@ -51,6 +51,7 @@ class SessionConfiguration extends Config
             'gc_maxlifetime',
             'name',
             'referer_check',
+            'save_path',
             'serialize_handler',
             'sid_bits_per_character',
             'sid_length',
