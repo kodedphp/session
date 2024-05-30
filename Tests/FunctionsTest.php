@@ -34,39 +34,28 @@ class FunctionsTest extends TestCase
 
     public function test_should_register_session_cookie()
     {
-        $this->markTestSkipped();
-
         $config = (new Config)->import([
             'session' => [
                 'save_handler' => 'files',
 
                 'use_cookies'     => true,
                 'cookie_lifetime' => 120,
-                'cookie_path'     => '/tmp',
+                'cookie_path'     => '/tmp/sessions',
                 'cookie_secure'   => true,
                 'cookie_httponly' => true,
+                'cookie_samesite' => 'Lax'
             ]
         ]);
 
         session_register_custom_handler($config);
 
-        if (version_compare(PHP_MINOR_VERSION, '3', '<')) {
-            $this->assertEquals([
-                'lifetime' => 120,
-                'path'     => '/tmp',
-                'domain'   => '',
-                'secure'   => true,
-                'httponly' => true,
-            ], session_get_cookie_params());
-        } else {
-            $this->assertEquals([
-                'lifetime' => 120,
-                'path'     => '/tmp',
-                'domain'   => '',
-                'secure'   => true,
-                'httponly' => true,
-                'samesite' => '',
-            ], session_get_cookie_params());
-        }
+        $this->assertEquals([
+            'lifetime' => 120,
+            'path'     => '/tmp/sessions',
+            'domain'   => '',
+            'secure'   => true,
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ], session_get_cookie_params());
     }
 }
