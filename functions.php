@@ -11,6 +11,11 @@ namespace Koded\Session;
 
 use Koded\Stdlib\Configuration;
 use SessionHandlerInterface;
+use function class_exists;
+use function session_set_cookie_params;
+use function session_set_save_handler;
+use function session_status;
+use function ucfirst;
 
 /**
  * Creates the Session object if not already instantiated,
