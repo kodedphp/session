@@ -1,6 +1,8 @@
 build
 vendor
-.DS_Store
 .idea
+.fleet
+.DS_Store
 composer.lock
 *.cache
+docker-compose.yml
