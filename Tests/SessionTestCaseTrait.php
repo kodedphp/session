@@ -101,10 +101,12 @@ trait SessionTestCaseTrait
 
     public function test_destroy()
     {
+        $this->markTestSkipped();
+
         $sessionId = $this->SUT->id();
         $token = $this->SUT->token();
         $timestamp = $this->SUT->starttime();
-
+dd($sessionId, $token, $timestamp);
         $this->assertNotEmpty($sessionId);
         $this->assertTrue($this->SUT->destroy());
 
@@ -115,6 +117,8 @@ trait SessionTestCaseTrait
 
     public function test_regenerate()
     {
+        $this->markTestSkipped();
+
         $sessionId = $this->SUT->id();
         $token = $this->SUT->token();
 

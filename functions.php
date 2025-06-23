@@ -21,11 +21,11 @@ use function ucfirst;
  * Creates the Session object if not already instantiated,
  * or returns an instance of Session.
  *
- * @param Session $instance [optional]
+ * @param null|Session $instance [optional]
  *
  * @return Session
  */
-function session(Session $instance = null): Session
+function session(null|Session $instance = null): Session
 {
     static $session;
     if ($instance) {
@@ -46,7 +46,9 @@ function session_register_custom_handler(Configuration $configuration): SessionC
 {
     $configuration = new SessionConfiguration($configuration);
     if (PHP_SESSION_ACTIVE !== session_status()) {
-        session_set_cookie_params($configuration->cookieParameters());
+        if ($configuration->get('use_cookies')) {
+            session_set_cookie_params($configuration->cookieParameters());
+        }
         session_set_save_handler(session_create_custom_handler($configuration), false);
     }
     return $configuration;

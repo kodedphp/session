@@ -11,7 +11,11 @@ namespace Koded\Session\Handler;
 
 use Koded\Session\SessionConfiguration;
 use SessionHandlerInterface;
+use function ini_get;
 use function Koded\Caching\simple_cache_factory;
+use function session_get_cookie_params;
+use function time;
+use function trim;
 
 final class MemcachedHandler implements SessionHandlerInterface
 {
@@ -58,7 +62,7 @@ final class MemcachedHandler implements SessionHandlerInterface
     /**
      * @codeCoverageIgnore
      */
-    public function gc($maxLifetime): bool
+    public function gc($maxLifetime): int|false
     {
         return true;
     }
@@ -69,7 +73,7 @@ final class MemcachedHandler implements SessionHandlerInterface
             'id'      => (string)$settings->get('id', $settings->get('name', ini_get('session.name'))),
             'servers' => (array)$settings->get('servers', [['127.0.0.1', 11211]]),
             'options' => (array)$settings->get('options', []) + [
-                    \Memcached::OPT_PREFIX_KEY => (string)$settings->get('prefix', 'session.')
+                    \Memcached::OPT_PREFIX_KEY => trim($settings->get('prefix') ?: $settings->get('name') ?: 'session', '.') . '.'
                 ]
         ];
     }

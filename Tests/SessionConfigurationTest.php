@@ -10,13 +10,13 @@ class SessionConfigurationTest extends TestCase
 {
     public function test_expire_at_browser_close_should_set_cookie_lifetime_to_zero()
     {
-        $this->markTestSkipped('WIP');
+//        $this->markTestSkipped('WIP');
 
         $current = ini_get('session.cookie_lifetime');
 
         $config = (new Config)->import([
             'session' => [
-                'save_handler'            => 'files',
+//                'save_handler'            => 'files',
                 'expire_at_browser_close' => true,
             ]
         ]);

@@ -13,11 +13,12 @@ use Koded\Stdlib\{Config, Configuration, Immutable};
 use function ini_get;
 use function ini_get_all;
 use function ini_set;
+use function is_scalar;
 
 class SessionConfiguration extends Config
 {
-    private array $cookieParameters = [];
-    private array $sessionParameters = [];
+    private array $cookieParameters;
+    private array $sessionParameters;
 
     /** @noinspection PhpMissingParentConstructorInspection */
     public function __construct(Configuration $settings)
@@ -34,11 +35,13 @@ class SessionConfiguration extends Config
             ]);
 
         if ($this->get('expire_at_browser_close')) {
-            @ini_set('session.cookie_lifetime', 0);
+            @ini_set('session.cookie_lifetime', '0');
             $this->set('cookie_lifetime', 0);
         }
         foreach ($this as $name => $value) {
-            @ini_set('session.' . $name, $value);
+            if (is_scalar($value)) {
+                @ini_set('session.' . $name, $value);
+            }
         }
         // session parameters
         $this->sessionParameters = (new Immutable($this->filter(
@@ -51,7 +54,7 @@ class SessionConfiguration extends Config
             'gc_maxlifetime',
             'name',
             'referer_check',
-            'save_path',
+            //'save_path',
             'serialize_handler',
             'sid_bits_per_character',
             'sid_length',

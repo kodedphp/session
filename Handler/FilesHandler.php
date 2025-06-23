@@ -11,13 +11,15 @@ namespace Koded\Session\Handler;
 
 use Koded\Session\SessionConfiguration;
 use SessionHandler;
+use function ini_set;
+use function session_save_path;
 
 final class FilesHandler extends SessionHandler
 {
     public function __construct(SessionConfiguration $settings)
     {
         ini_set('session.save_handler', 'files');
-        ini_set('session.save_path', $settings->get('save_path', session_save_path()));
+        ini_set('session.save_path', $settings->get('save_path', session_save_path() ?: '/tmp'));
         ini_set('session.serialize_handler', $settings->get('serialize_handler', 'php'));
     }
 }

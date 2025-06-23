@@ -10,36 +10,40 @@
 namespace Koded\Session;
 
 use Koded\Stdlib\Configuration;
-use Koded\Http\{ServerResponse, StatusCode};
+use Koded\Http\ServerResponse;
+use Koded\Http\Interfaces\HttpStatus;
 use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
 use Psr\Http\Server\{MiddlewareInterface, RequestHandlerInterface};
 use function Koded\Stdlib\json_serialize;
+use function strtoupper;
 
 class SessionAuthenticatedMiddleware implements MiddlewareInterface
 {
     public const AUTHENTICATED = 'authenticated';
     public const LOGIN_URI     = 'loginUri';
 
-    private $redirectTo = '/';
+    private string $redirectTo = '/';
 
     public function __construct(Configuration $settings)
     {
         $this->redirectTo = $settings->get(self::LOGIN_URI, $this->redirectTo);
     }
 
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler): ResponseInterface
     {
         if (true === ($_SESSION[self::AUTHENTICATED] ?? false)) {
             return $handler->handle($request);
         }
         // Ajax requests should be handled in the browser
-        if ('XMLHTTPREQUEST' === \strtoupper($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '')) {
+        if ('XMLHTTPREQUEST' === strtoupper($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '')) {
             return (new ServerResponse(json_serialize([
                 'location' => $this->redirectTo,
-                'status'   => StatusCode::UNAUTHORIZED
-            ]), StatusCode::UNAUTHORIZED));
+                'status'   => HttpStatus::UNAUTHORIZED
+            ]), HttpStatus::UNAUTHORIZED));
         }
-        return (new ServerResponse(null, StatusCode::TEMPORARY_REDIRECT))
+        return (new ServerResponse(null, HttpStatus::TEMPORARY_REDIRECT))
             ->withHeader('Location', $this->redirectTo);
     }
 }
